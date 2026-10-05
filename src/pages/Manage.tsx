@@ -198,7 +198,7 @@ export function Manage() {
           </div>
           <Link to="/" className="text-[13px] font-bold text-[#1E1C18] underline underline-offset-4">view site →</Link>
         </div>
-        <div className="mx-auto max-w-[1080px] px-4 sm:px-6 pb-3 flex gap-2 overflow-x-auto no-scrollbar" role="tablist" aria-label="Management sections">
+        <div className="mx-auto max-w-[1080px] px-4 sm:px-6 pb-3 flex flex-wrap gap-2" role="tablist" aria-label="Management sections">
           {TABS.map((t) => (
             <button
               key={t.id}

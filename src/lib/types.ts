@@ -288,7 +288,7 @@ export const PLACEHOLDER_CONFIG: SiteConfig = {
   site_name: 'Lorem Ipsum',
   tagline: 'Lorem ipsum dolor sit amet',
   hero_title: 'It’s Lorem!',
-  theme: 'classic',
+  theme: 'painterly',
 }
 
 export const PLACEHOLDER_TERMS: TermsSection[] = [
