@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { useCallback, useEffect, useRef } from 'react'
 import type { Artwork } from '../lib/types'
-import { publicArtUrl } from '../lib/supabase'
+import { SmartImage } from './SmartImage'
 import { Tape } from './Bits'
 
 export function ArtworkCard({
@@ -16,7 +16,6 @@ export function ArtworkCard({
   index: number
   span?: string
 }) {
-  const src = publicArtUrl(art.image_path)
   const rot = [-0.8, 0.6, -0.4, 0.8][index % 4]
   return (
     <motion.figure
@@ -35,22 +34,12 @@ export function ArtworkCard({
         aria-haspopup="dialog"
       >
         <div className="overflow-hidden rounded-lg art-img">
-          {src ? (
-            <img
-              src={src}
-              alt={`${art.title} — ${art.category}`}
-              loading="lazy"
-              decoding="async"
-              width={800}
-              height={600}
-              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-              className="w-full h-full object-cover aspect-[4/3] transition-transform duration-300 group-hover:scale-[1.03]"
-            />
-          ) : (
-            <div className="w-full aspect-[4/3] grid place-items-center bg-[#efe7d6]" role="img" aria-label={`${art.title} image unavailable`}>
-              <span className="font-hand text-[22px] text-[#8a6f5c]">♡</span>
-            </div>
-          )}
+          <SmartImage
+            path={art.image_path}
+            alt={`${art.title} — ${art.category}`}
+            width={800}
+            className="w-full h-full object-cover aspect-[4/3] transition-transform duration-300 group-hover:scale-[1.03]"
+          />
         </div>
         <figcaption className="px-1.5 pt-2 flex items-center justify-between gap-2">
           <span className="inline-flex items-center rounded-full bg-[#f2d8d3]/70 text-[#5b2b4e] text-[11.5px] font-bold px-2.5 py-1">
@@ -179,11 +168,14 @@ export function ArtworkViewer({
               </button>
             </div>
             <div className="rounded-xl overflow-hidden bg-[#efe7d6] border border-[#e6dcc8] min-h-[240px] sm:min-h-[320px] grid place-items-center">
-              {publicArtUrl(art.image_path) ? (
-                <img src={publicArtUrl(art.image_path) ?? ''} alt={`${art.title} full view`} className="w-full max-h-[68dvh] object-contain bg-[#efe7d6]" draggable={false} />
-              ) : (
-                <span className="font-hand text-[24px] text-[#8a6f5c] py-16">image unavailable ♡</span>
-              )}
+              <SmartImage
+                path={art.image_path}
+                alt={`${art.title} full view`}
+                width={1600}
+                sizes="100vw"
+                draggable={false}
+                className="w-full max-h-[68dvh] object-contain bg-[#efe7d6]"
+              />
             </div>
             <div className="flex items-center justify-between pt-3 px-1">
               <button onClick={() => go(-1)} className="inline-flex items-center gap-2 rounded-full border border-[#5b2b4e]/30 px-5 py-2.5 font-semibold text-[#5b2b4e] hover:bg-[#5b2b4e]/5 min-h-[48px]" aria-label="Previous artwork">

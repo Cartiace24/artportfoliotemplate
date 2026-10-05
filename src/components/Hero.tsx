@@ -2,8 +2,9 @@ import { motion, useReducedMotion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { useRef } from 'react'
-import type { Artwork, SiteSettings } from '../lib/types'
+import type { Artwork, SiteConfig, SiteSettings } from '../lib/types'
 import { publicArtUrl } from '../lib/supabase'
+import { SmartImage } from './SmartImage'
 import { doodlePop, easeSoft } from '../animations/variants'
 
 function useParallax(ref: React.RefObject<HTMLDivElement | null>) {
@@ -45,7 +46,7 @@ export function CommissionBadge({ settings }: { settings: SiteSettings }) {
   )
 }
 
-export function Hero({ settings, heroArt }: { settings: SiteSettings; heroArt: Artwork | null }) {
+export function Hero({ settings, heroArt, config }: { settings: SiteSettings; heroArt: Artwork | null; config: SiteConfig }) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const { onMove, onLeave } = useParallax(wrapRef)
   const img = heroArt ? publicArtUrl(heroArt.image_path) : null
@@ -69,7 +70,7 @@ export function Hero({ settings, heroArt }: { settings: SiteSettings; heroArt: A
             transition={{ duration: 0.8, delay: 0.15, ease: easeSoft as unknown as [number, number, number, number] }}
             className="font-serif-ed font-semibold text-[56px] sm:text-[72px] lg:text-[84px] leading-[0.95] tracking-tight text-[#40203f]"
           >
-            It&rsquo;s Lorem!
+            {config.hero_title || 'It’s Lorem!'}
             <span aria-hidden className="inline-block align-top text-[28px] ml-1 text-[#5b2b4e]">✦</span>
           </motion.h1>
           <motion.p
@@ -78,7 +79,7 @@ export function Hero({ settings, heroArt }: { settings: SiteSettings; heroArt: A
             transition={{ duration: 0.6, delay: 0.32 }}
             className="mt-4 text-[15.5px] md:text-[16.5px] text-[#5c4f5e] font-medium"
           >
-            Lorem ipsum dolor <span className="mx-1.5 text-[#b9a8d0]">•</span> sit amet <span className="mx-1.5 text-[#b9a8d0]">•</span> consectetur <span className="mx-1.5 text-[#b9a8d0]">•</span> adipiscing
+            {config.tagline || 'Lorem ipsum dolor sit amet'}
           </motion.p>
 
           <div className="mt-4">
@@ -145,15 +146,13 @@ export function Hero({ settings, heroArt }: { settings: SiteSettings; heroArt: A
             style={{ transform: 'translate(var(--px,0px), var(--py,0px))', transition: 'transform 0.25s ease-out' }}
           >
             {img ? (
-              <img
-                src={img}
+              <SmartImage
+                path={heroArt?.image_path ?? null}
                 alt={heroArt?.title ?? 'Featured artwork by Lorem Ipsum'}
                 className="w-full h-[320px] sm:h-[420px] lg:h-[520px] object-cover"
-                loading="eager"
-                fetchPriority="high"
-                width={1280}
-                height={720}
+                width={1400}
                 sizes="(max-width: 1024px) 100vw, 65vw"
+                eager
               />
             ) : (
               <div className="w-full h-[320px] sm:h-[420px] lg:h-[520px] grid place-items-center bg-gradient-to-br from-[#e7ddf0] via-[#f2d8d3] to-[#dde5d2]" role="img" aria-label="Featured artwork coming soon">

@@ -1,28 +1,32 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import {
-  ArrowLeft, BadgeDollarSign, Check, Copy, Eye, ImagePlus, LayoutDashboard,
-  Loader2, Lock, Palette, RefreshCw, Settings2, Share2, Trash2, TriangleAlert, User,
+  ArrowLeft, BadgeDollarSign, Check, Copy, Download, Eye, FileText, Globe, ImagePlus, Inbox, LayoutDashboard,
+  Loader2, Lock, Palette, RefreshCw, Settings2, Share2, Trash2, TriangleAlert, Upload, User,
 } from 'lucide-react'
 import { getSupabase, publicArtUrl } from '../lib/supabase'
 import { isDemoAllowed, isSupabaseConfigured } from '../lib/env'
 import { callManageRpc, tokenHash, uploadArtworkFile, validateImageFile, validateManageToken } from '../lib/manageApi'
 import { generateManageToken, sha256Hex } from '../lib/tokens'
+import { PageMeta } from '../lib/meta'
 import {
-  PLACEHOLDER_ABOUT, PLACEHOLDER_ARTWORKS, PLACEHOLDER_PRICES, PLACEHOLDER_SETTINGS, PLACEHOLDER_SOCIALS,
-  type AboutContent, type Artwork, type CommissionPrice, type SiteSettings, type SocialLink,
+  PLACEHOLDER_ABOUT, PLACEHOLDER_ARTWORKS, PLACEHOLDER_CONFIG, PLACEHOLDER_PRICES, PLACEHOLDER_SETTINGS, PLACEHOLDER_SOCIALS, PLACEHOLDER_TERMS,
+  type AboutContent, type Artwork, type CommissionPrice, type CommissionRequest, type SiteConfig, type SiteSettings, type SocialLink, type TermsSection,
 } from '../lib/types'
 
-type Tab = 'overview' | 'artwork' | 'commissions' | 'pricing' | 'about' | 'socials' | 'access'
+type Tab = 'overview' | 'artwork' | 'commissions' | 'inbox' | 'pricing' | 'about' | 'socials' | 'terms' | 'site' | 'access'
 
 const TABS: { id: Tab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'artwork', label: 'Artwork', icon: Palette },
   { id: 'commissions', label: 'Commissions', icon: Settings2 },
+  { id: 'inbox', label: 'Inbox', icon: Inbox },
   { id: 'pricing', label: 'Pricing', icon: BadgeDollarSign },
   { id: 'about', label: 'About', icon: User },
   { id: 'socials', label: 'Socials', icon: Share2 },
+  { id: 'terms', label: 'Terms', icon: FileText },
+  { id: 'site', label: 'Site', icon: Globe },
   { id: 'access', label: 'Access', icon: Lock },
 ]
 
@@ -32,6 +36,8 @@ function useManageData(token: string | null, authed: boolean) {
   const [prices, setPrices] = useState<CommissionPrice[]>(PLACEHOLDER_PRICES)
   const [about, setAbout] = useState<AboutContent>(PLACEHOLDER_ABOUT)
   const [socials, setSocials] = useState<SocialLink[]>(PLACEHOLDER_SOCIALS)
+  const [terms, setTerms] = useState<TermsSection[]>(PLACEHOLDER_TERMS)
+  const [config, setConfig] = useState<SiteConfig>(PLACEHOLDER_CONFIG)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
 
@@ -57,6 +63,8 @@ function useManageData(token: string | null, authed: boolean) {
             if (d.prices) setPrices(d.prices)
             if (d.about) setAbout(d.about)
             if (d.socials) setSocials(d.socials)
+            if (d.terms) setTerms(d.terms)
+            if (d.config) setConfig(d.config)
           }
         } catch { /* ignore */ }
         setLoading(false)
@@ -64,12 +72,14 @@ function useManageData(token: string | null, authed: boolean) {
       }
       try {
         const sb = getSupabase()!
-        const [s, a, p, ab, so] = await Promise.all([
+        const [s, a, p, ab, so, t, c] = await Promise.all([
           sb.from('site_settings').select('*').limit(1).maybeSingle(),
           sb.from('artworks').select('*').order('sort_order'),
           sb.from('commission_prices').select('*, commission_categories(name)').order('sort_order'),
           sb.from('about_content').select('*').limit(1).maybeSingle(),
           sb.from('social_links').select('*').order('sort_order'),
+          sb.from('terms_sections').select('*').order('sort_order'),
+          sb.from('site_config').select('*').limit(1).maybeSingle(),
         ])
         if (s.data) setSettings(s.data as SiteSettings)
         if (a.data?.length) setArtworks(a.data as Artwork[])
@@ -82,6 +92,8 @@ function useManageData(token: string | null, authed: boolean) {
         }
         if (ab.data) setAbout(ab.data as AboutContent)
         if (so.data?.length) setSocials(so.data as SocialLink[])
+        if (t.data?.length) setTerms(t.data as TermsSection[])
+        if (c.data) setConfig(c.data as SiteConfig)
       } catch {
         setLoadError("Couldn't load your site content. Check your connection and refresh — your published site is unaffected.")
       }
@@ -92,11 +104,11 @@ function useManageData(token: string | null, authed: boolean) {
   useEffect(() => {
     if (!authed || !isDemoAllowed) return
     try {
-      localStorage.setItem('shiakonii-demo-data', JSON.stringify({ settings, artworks, prices, about, socials }))
+      localStorage.setItem('shiakonii-demo-data', JSON.stringify({ settings, artworks, prices, about, socials, terms, config }))
     } catch { /* ignore */ }
-  }, [authed, settings, artworks, prices, about, socials])
+  }, [authed, settings, artworks, prices, about, socials, terms, config])
 
-  return { settings, setSettings, artworks, setArtworks, prices, setPrices, about, setAbout, socials, setSocials, loading, loadError }
+  return { settings, setSettings, artworks, setArtworks, prices, setPrices, about, setAbout, socials, setSocials, terms, setTerms, config, setConfig, loading, loadError }
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -169,6 +181,7 @@ export function Manage() {
 
   return (
     <main id="main" className="min-h-dvh pb-16">
+      <PageMeta title={`Studio — ${data.config.site_name}`} description="Private site management studio." />
       <div className="sticky top-0 z-40 bg-[#FAF6EF]/94 backdrop-blur border-b border-[#e6dcc8]">
         <div className="mx-auto max-w-[1080px] px-4 sm:px-6 h-[64px] flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -209,12 +222,15 @@ export function Manage() {
         )}
         <AnimatePresence mode="wait">
           <motion.div key={tab} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.28 }}>
-            {tab === 'overview' && <OverviewTab data={data} onGo={setTab} />}
+            {tab === 'overview' && <OverviewTab data={data} say={say} onGo={setTab} token={token!} />}
             {tab === 'artwork' && <ArtworkTab data={data} say={say} token={token!} />}
             {tab === 'commissions' && <CommissionsTab data={data} say={say} token={token!} />}
+            {tab === 'inbox' && <InboxTab say={say} token={token!} />}
             {tab === 'pricing' && <PricingTab data={data} say={say} token={token!} />}
             {tab === 'about' && <AboutTab data={data} say={say} token={token!} />}
             {tab === 'socials' && <SocialsTab data={data} say={say} token={token!} />}
+            {tab === 'terms' && <TermsTab data={data} say={say} token={token!} />}
+            {tab === 'site' && <SiteTab data={data} say={say} token={token!} />}
             {tab === 'access' && <AccessTab say={say} token={token!} />}
           </motion.div>
         </AnimatePresence>
@@ -254,10 +270,129 @@ function ToastMessage({ message }: { message: string }) {
 }
 
 /* ---------------- Overview ---------------- */
-function OverviewTab({ data, onGo }: { data: Data; onGo: (t: Tab) => void }) {
+function OverviewTab({ data, say, onGo, token }: { data: Data; say: (m: string) => void; onGo: (t: Tab) => void; token: string }) {
   const { settings, artworks } = data
   const open = settings.commission_status === 'open'
   const featured = artworks.filter((a) => a.featured).length
+  const [restoring, setRestoring] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const exportBackup = () => {
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      version: 1,
+      settings: data.settings,
+      config: data.config,
+      about: data.about,
+      artworks: data.artworks,
+      prices: data.prices,
+      socials: data.socials,
+      terms: data.terms,
+    }
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `site-backup-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000)
+    say('Backup downloaded ♡')
+  }
+
+  const importBackup = async (file: File) => {
+    let d: Record<string, unknown>
+    try {
+      d = JSON.parse(await file.text()) as Record<string, unknown>
+    } catch {
+      say("Couldn't read that file — is it a site backup?")
+      return
+    }
+    if (!d || typeof d !== 'object' || !d.settings) {
+      say("That doesn't look like a site backup.")
+      return
+    }
+    if (!confirm('Restore this backup? It adds its artworks, socials, and terms as new entries and overwrites settings, about, pricing, and site name.')) return
+    setRestoring(true)
+    try {
+      if (!isSupabaseConfigured) {
+        if (isDemoAllowed) {
+          if (d.settings) data.setSettings(d.settings as SiteSettings)
+          if (d.config) data.setConfig(d.config as SiteConfig)
+          if (d.about) data.setAbout(d.about as AboutContent)
+          if (Array.isArray(d.artworks)) data.setArtworks(d.artworks as Artwork[])
+          if (Array.isArray(d.prices)) data.setPrices(d.prices as CommissionPrice[])
+          if (Array.isArray(d.socials)) data.setSocials(d.socials as SocialLink[])
+          if (Array.isArray(d.terms)) data.setTerms(d.terms as TermsSection[])
+          say('Backup restored (demo) ♡')
+        } else {
+          say("Couldn't restore — studio is not connected.")
+        }
+        return
+      }
+      const h = await tokenHash(token)
+      const call = async (fn: string, args: Record<string, unknown>) => {
+        const r = await callManageRpc({ fn, args: { p_token_hash: h, ...args } })
+        if (!r.ok) throw new Error(r.error ?? fn)
+      }
+      const s = d.settings as SiteSettings
+      await call('manage_update_settings', { p_status: s.commission_status, p_message: s.commission_message, p_slots: s.available_slots })
+      data.setSettings(s)
+      if (d.config) {
+        const c = d.config as SiteConfig
+        await call('manage_update_config', { p_site_name: c.site_name, p_tagline: c.tagline, p_hero_title: c.hero_title })
+        data.setConfig(c)
+      }
+      if (d.about) {
+        const ab = d.about as AboutContent
+        await call('manage_update_about', { p_bio: ab.bio, p_short: ab.short_description, p_interests: ab.interests, p_subjects: ab.subjects, p_signature: ab.signature, p_profile_path: ab.profile_image_path })
+        data.setAbout(ab)
+      }
+      if (Array.isArray(d.prices)) {
+        const rows = d.prices as CommissionPrice[]
+        for (const row of rows) {
+          const match = data.prices.find(
+            (p) => p.type === row.type && (p.category_name === row.category_name || p.category_id === row.category_id)
+          )
+          const target = match ?? data.prices.find((p) => p.type === row.type)
+          if (target) {
+            await call('manage_upsert_price', { p_id: target.id, p_price: Number(row.price), p_enabled: row.enabled })
+          }
+        }
+        say('Pricing restored — refresh the Pricing tab to confirm ♡')
+      }
+      if (Array.isArray(d.artworks)) {
+        const rows = (d.artworks as Artwork[]).slice(0, 200)
+        const added: Artwork[] = []
+        for (const row of rows) {
+          if (!row.title || !row.image_path) continue
+          await call('manage_upsert_artwork', {
+            p_title: row.title, p_description: row.description ?? null, p_category: row.category ?? 'Lorem',
+            p_image_path: row.image_path, p_year: row.year ?? null, p_featured: !!row.featured, p_sort: row.sort_order ?? 0,
+          })
+          added.push({ ...row, id: `restored-${Date.now()}-${added.length}` })
+        }
+        if (added.length) data.setArtworks([...data.artworks, ...added])
+      }
+      if (Array.isArray(d.socials)) {
+        for (const row of d.socials as SocialLink[]) {
+          if (!row.platform) continue
+          await call('manage_upsert_social', { p_platform: row.platform, p_url: row.url ?? '', p_display: row.display_name ?? null, p_enabled: row.enabled !== false, p_sort: row.sort_order ?? 0 })
+        }
+      }
+      if (Array.isArray(d.terms)) {
+        for (const row of d.terms as TermsSection[]) {
+          if (!row.title && !row.body) continue
+          await call('manage_upsert_terms', { p_title: row.title ?? '', p_body: row.body ?? '', p_sort: row.sort_order ?? 0 })
+        }
+      }
+      say('Backup restored — reloading…')
+      setTimeout(() => window.location.reload(), 1400)
+    } catch (e) {
+      say("Couldn't restore — " + (e instanceof Error ? e.message : 'please try again.'))
+    } finally {
+      setRestoring(false)
+    }
+  }
+
   return (
     <div className="grid md:grid-cols-2 gap-5">
       <div className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-6">
@@ -273,10 +408,14 @@ function OverviewTab({ data, onGo }: { data: Data; onGo: (t: Tab) => void }) {
           <button onClick={() => onGo('artwork')}
             className="rounded-full border border-[#5b2b4e]/40 text-[#5b2b4e] px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">Manage artwork</button>
         </div>
-        <div className="mt-4">
+        <div className="mt-4 flex flex-wrap gap-3">
           <Link to="/" className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#5b2b4e] underline underline-offset-4 min-h-[44px]">
             <Eye className="w-4 h-4" aria-hidden /> View live site
           </Link>
+          <button onClick={() => onGo('inbox')}
+            className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#5b2b4e] underline underline-offset-4 min-h-[44px]">
+            <Inbox className="w-4 h-4" aria-hidden /> Check requests
+          </button>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-5">
@@ -292,6 +431,27 @@ function OverviewTab({ data, onGo }: { data: Data; onGo: (t: Tab) => void }) {
             <p className="text-[12.5px] text-[#8d857a]">{sub}</p>
           </div>
         ))}
+      </div>
+      <div className="md:col-span-2 rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-5 flex flex-wrap items-center gap-3">
+        <div className="flex-1 min-w-[220px]">
+          <p className="font-serif-ed italic text-[19px] text-[#40203f]">Backup ✿</p>
+          <p className="text-[13px] text-[#8d857a]">Download everything as JSON, or restore from a backup file.</p>
+        </div>
+        <button onClick={exportBackup}
+          className="inline-flex items-center gap-2 rounded-full border border-[#5b2b4e]/40 text-[#5b2b4e] px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">
+          <Download className="w-4 h-4" aria-hidden /> Export
+        </button>
+        <input ref={fileRef} type="file" accept="application/json,.json" className="sr-only" aria-label="Choose backup file"
+          onChange={(e) => {
+            const f = e.target.files?.[0]
+            e.target.value = ''
+            if (f) importBackup(f)
+          }} />
+        <button onClick={() => fileRef.current?.click()} disabled={restoring}
+          className="inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-5 py-2.5 text-[13.5px] font-bold min-h-[44px] disabled:opacity-60">
+          {restoring ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Upload className="w-4 h-4" aria-hidden />}
+          {restoring ? 'Restoring…' : 'Restore'}
+        </button>
       </div>
       <p className="md:col-span-2 rounded-2xl bg-[#f3ecdd]/60 border border-dashed border-[#c9b995] p-4 text-[13.5px] text-[#6d5f6b]">
         ✿ Tip: everything you change here appears on the public site instantly — no redeploy needed
@@ -918,6 +1078,284 @@ function SocialsTab({ data, say, token }: { data: Data; say: (m: string) => void
         </button>
       </div>
       <p className="mt-3 text-[12.5px] text-[#8d857a] flex gap-1.5"><TriangleAlert className="w-4 h-4 shrink-0" /> Never invent URLs — only add profiles you actually own. Empty links stay hidden on the public site.</p>
+    </div>
+  )
+}
+
+/* ---------------- Inbox ---------------- */
+function InboxTab({ say, token }: { say: (m: string) => void; token: string }) {
+  const [requests, setRequests] = useState<CommissionRequest[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null)
+
+  const load = useCallback(async () => {
+    if (!isSupabaseConfigured) {
+      setLoading(false)
+      return
+    }
+    setLoading(true)
+    setError(null)
+    try {
+      const sb = getSupabase()!
+      const h = await tokenHash(token)
+      const { data, error: rpcErr } = await sb.rpc('manage_get_requests', { p_token_hash: h })
+      if (rpcErr) throw rpcErr
+      setRequests((data ?? []) as CommissionRequest[])
+    } catch {
+      setError("Couldn't load requests. Check your connection and try again.")
+    }
+    setLoading(false)
+  }, [token])
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  useEffect(() => {
+    if (!pendingDelete) return
+    const t = setTimeout(() => setPendingDelete(null), 4000)
+    return () => clearTimeout(t)
+  }, [pendingDelete])
+
+  const remove = async (id: string) => {
+    if (pendingDelete !== id) {
+      setPendingDelete(id)
+      return
+    }
+    setPendingDelete(null)
+    const snapshot = requests
+    setRequests(snapshot.filter((r) => r.id !== id))
+    const h = await tokenHash(token)
+    const r = await callManageRpc({ fn: 'manage_delete_request', args: { p_token_hash: h, p_id: id } })
+    if (!r.ok) {
+      setRequests(snapshot)
+      say("Couldn't delete — " + (r.error ?? 'please try again.'))
+      return
+    }
+    say('Request removed')
+  }
+
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-8 text-center max-w-2xl">
+        <p className="font-hand text-[24px] text-[#8a6f5c]">the inbox lives in Supabase ✉</p>
+        <p className="mt-1 text-[14px] text-[#6d5f6b]">
+          {isDemoAllowed
+            ? 'Demo form submissions are not stored — connect Supabase and deploy the commission-request function to receive real requests.'
+            : 'Studio is not connected.'}
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="max-w-2xl">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-[14px] text-[#6d5f6b]">
+          <strong>{requests.length}</strong> request{requests.length === 1 ? '' : 's'} — reply via the contact they left ♡
+        </p>
+        <button onClick={load} className="inline-flex items-center gap-1.5 rounded-full border border-[#e6dcc8] bg-white px-4 py-2 text-[13px] font-bold hover:bg-[#f3ecdd] min-h-[44px]">
+          <RefreshCw className="w-3.5 h-3.5" aria-hidden /> Refresh
+        </button>
+      </div>
+      {loading && (
+        <div className="space-y-3" aria-hidden>
+          {[0, 1].map((i) => (
+            <div key={i} className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-5 animate-pulse">
+              <div className="h-5 w-40 rounded bg-[#f3ecdd]" />
+              <div className="mt-2 h-4 rounded bg-[#faf3e8]" />
+            </div>
+          ))}
+        </div>
+      )}
+      {error && !loading && (
+        <div role="alert" className="rounded-2xl border border-[#c98a8a]/40 bg-[#f2d8d3]/40 px-5 py-4 text-[14px] font-semibold text-[#6e2f2f]">
+          {error}
+        </div>
+      )}
+      {!loading && !error && requests.length === 0 && (
+        <div className="rounded-2xl border border-dashed border-[#c9b995] bg-[#fffdf7]/60 px-6 py-10 text-center">
+          <p className="font-hand text-[24px] text-[#8a6f5c]">no requests yet — share your commissions page! ✿</p>
+        </div>
+      )}
+      <div className="space-y-3">
+        {requests.map((r) => (
+          <article key={r.id} className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-5">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="font-bold text-[15px] text-[#40203f]">{r.name} <span className="font-hand font-normal text-[#8a6f5c]">• {r.type}</span></p>
+                <p className="text-[12.5px] text-[#8d857a]">{r.contact} • {new Date(r.created_at).toLocaleString()}</p>
+              </div>
+              <button
+                onClick={() => remove(r.id)}
+                aria-label={pendingDelete === r.id ? 'Confirm delete request' : 'Delete request'}
+                className={`shrink-0 rounded-full border px-4 py-2 text-[12.5px] font-bold min-h-[44px] ${
+                  pendingDelete === r.id ? 'border-red-700 bg-red-800 text-white' : 'border-red-200 text-red-800 hover:bg-red-50'
+                }`}
+              >
+                {pendingDelete === r.id ? 'Sure?' : <Trash2 className="w-4 h-4" aria-hidden />}
+              </button>
+            </div>
+            <p className="mt-2 text-[14px] leading-relaxed text-[#4d4250] whitespace-pre-wrap">{r.details}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ---------------- Terms ---------------- */
+function TermsTab({ data, say, token }: { data: Data; say: (m: string) => void; token: string }) {
+  const { terms, setTerms } = data
+  const [draft, setDraft] = useState(terms)
+  const [deletedIds, setDeletedIds] = useState<string[]>([])
+  const [saving, setSaving] = useState(false)
+  useEffect(() => {
+    setDraft(terms)
+    setDeletedIds([])
+  }, [terms])
+
+  const save = async () => {
+    const clean = draft.filter((s) => s.title.trim() !== '' || s.body.trim() !== '')
+    if (clean.length === 0) {
+      say('Add at least one section first ♡')
+      return
+    }
+    setSaving(true)
+    if (!isSupabaseConfigured) {
+      if (!isDemoAllowed) {
+        say("Couldn't save — studio is not connected.")
+        setSaving(false)
+        return
+      }
+      setTerms(clean.map((s, i) => ({ ...s, sort_order: i + 1 })))
+      setDeletedIds([])
+      setSaving(false)
+      say('Terms saved (demo) ♡')
+      return
+    }
+    const h = await tokenHash(token)
+    for (const gone of deletedIds) {
+      const r = await callManageRpc({ fn: 'manage_delete_terms', args: { p_token_hash: h, p_id: gone } })
+      if (!r.ok) {
+        say("Couldn't remove a section — " + (r.error ?? 'please try again.'))
+        setSaving(false)
+        return
+      }
+    }
+    clean.forEach((s, i) => (s.sort_order = i + 1))
+    for (const s of clean) {
+      const r = await callManageRpc({
+        fn: 'manage_upsert_terms',
+        args: { p_token_hash: h, p_id: s.id.startsWith('new-') ? null : s.id, p_title: s.title, p_body: s.body, p_sort: s.sort_order },
+      })
+      if (!r.ok) {
+        say("Couldn't save — " + (r.error ?? 'please try again.'))
+        setSaving(false)
+        return
+      }
+    }
+    setTerms(clean)
+    setDeletedIds([])
+    setSaving(false)
+    say('Terms updated ♡')
+  }
+
+  return (
+    <div className="max-w-2xl">
+      <p className="text-[14px] text-[#6d5f6b] mb-4">These sections appear on the public <strong>/tos</strong> page, in order.</p>
+      <div className="space-y-3">
+        {draft.map((s, i) => (
+          <div key={s.id} className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-4 space-y-2.5">
+            <div className="flex gap-2.5">
+              <input value={s.title} placeholder="Section title"
+                onChange={(e) => setDraft(draft.map((x, k) => (k === i ? { ...x, title: e.target.value } : x)))}
+                className="flex-1 rounded-lg border border-[#e6dcc8] bg-white px-3 py-2.5 text-[14px] font-bold min-h-[44px]"
+                aria-label={`Section ${i + 1} title`} />
+              <button
+                onClick={() => {
+                  if (!s.id.startsWith('new-')) setDeletedIds((ids) => [...ids, s.id])
+                  setDraft(draft.filter((_, k) => k !== i))
+                }}
+                className="rounded-full border border-red-200 text-red-800 p-2.5 hover:bg-red-50 min-h-[44px] min-w-[44px] grid place-items-center"
+                aria-label={`Remove section ${i + 1}`}>
+                <Trash2 className="w-4 h-4" aria-hidden />
+              </button>
+            </div>
+            <textarea value={s.body} rows={3} placeholder="Section text…"
+              onChange={(e) => setDraft(draft.map((x, k) => (k === i ? { ...x, body: e.target.value } : x)))}
+              className="w-full rounded-lg border border-[#e6dcc8] bg-white px-3 py-2.5 text-[14px]"
+              aria-label={`Section ${i + 1} text`} />
+          </div>
+        ))}
+      </div>
+      <div className="mt-4 flex flex-wrap gap-2.5">
+        <button onClick={() => setDraft([...draft, { id: `new-${Date.now()}`, title: '', body: '', sort_order: draft.length + 1 }])}
+          className="rounded-full border border-[#5b2b4e]/40 text-[#5b2b4e] px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">+ Add section</button>
+        <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-7 py-2.5 font-bold disabled:opacity-60 min-h-[44px]">
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Check className="w-4 h-4" aria-hidden />} Save terms
+        </button>
+      </div>
+    </div>
+  )
+}
+
+/* ---------------- Site ---------------- */
+function SiteTab({ data, say, token }: { data: Data; say: (m: string) => void; token: string }) {
+  const { config, setConfig } = data
+  const [draft, setDraft] = useState(config)
+  const [saving, setSaving] = useState(false)
+  useEffect(() => setDraft(config), [config])
+
+  const save = async () => {
+    if (!draft.site_name.trim()) {
+      say('Give your site a name first ♡')
+      return
+    }
+    setSaving(true)
+    if (!isSupabaseConfigured) {
+      if (!isDemoAllowed) {
+        say("Couldn't save — studio is not connected.")
+        setSaving(false)
+        return
+      }
+      setConfig(draft)
+      setSaving(false)
+      say('Site settings saved (demo) ♡')
+      return
+    }
+    const h = await tokenHash(token)
+    const r = await callManageRpc({
+      fn: 'manage_update_config',
+      args: { p_token_hash: h, p_site_name: draft.site_name.trim(), p_tagline: draft.tagline.trim(), p_hero_title: draft.hero_title.trim() },
+    })
+    if (!r.ok) {
+      say("Couldn't save — " + (r.error ?? 'please try again.'))
+      setSaving(false)
+      return
+    }
+    setConfig(draft)
+    setSaving(false)
+    say('Site settings saved ♡')
+  }
+
+  return (
+    <div className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-6 max-w-2xl space-y-4">
+      <h2 className="font-serif-ed italic text-[26px] text-[#40203f]">Site ✿</h2>
+      <p className="text-[13.5px] text-[#8d857a] -mt-2">Name, tagline, and hero headline — used in the header, footer, and browser tab.</p>
+      <Field label="Site name">
+        <input className={inputCls} value={draft.site_name} onChange={(e) => setDraft({ ...draft, site_name: e.target.value })} placeholder="Lorem Ipsum" maxLength={60} />
+      </Field>
+      <Field label="Tagline">
+        <input className={inputCls} value={draft.tagline} onChange={(e) => setDraft({ ...draft, tagline: e.target.value })} placeholder="Lorem ipsum dolor sit amet" maxLength={140} />
+      </Field>
+      <Field label="Hero headline">
+        <input className={inputCls} value={draft.hero_title} onChange={(e) => setDraft({ ...draft, hero_title: e.target.value })} placeholder="It’s Lorem!" maxLength={80} />
+      </Field>
+      <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-7 py-3 font-bold disabled:opacity-60 min-h-[48px]">
+        {saving ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Check className="w-4 h-4" aria-hidden />} Save site settings
+      </button>
     </div>
   )
 }

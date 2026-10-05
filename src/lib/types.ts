@@ -54,6 +54,29 @@ export interface SocialLink {
   sort_order: number
 }
 
+export interface TermsSection {
+  id: string
+  title: string
+  body: string
+  sort_order: number
+}
+
+export interface SiteConfig {
+  id: string
+  site_name: string
+  tagline: string
+  hero_title: string
+}
+
+export interface CommissionRequest {
+  id: string
+  name: string
+  contact: string
+  type: string
+  details: string
+  created_at: string
+}
+
 /* ---------- Placeholder content (used when Supabase is not configured) ---------- */
 
 export const PLACEHOLDER_SETTINGS: SiteSettings = {
@@ -110,4 +133,21 @@ export const PLACEHOLDER_ARTWORKS: Artwork[] = [
   { id: 'a4', title: 'Tempor incididunt', category: 'Lorem', description: 'Ullamco laboris nisi ut aliquip ex ea commodo.', image_path: loremBox('Consectetur', 800, 560), year: '2024', featured: true, sort_order: 4 },
   { id: 'a5', title: 'Ut labore et dolore', category: 'Lorem', description: 'Duis aute irure dolor in reprehenderit in voluptate.', image_path: loremBox('Adipiscing', 700, 560), year: '2025', featured: true, sort_order: 5 },
   { id: 'a6', title: 'Magna aliqua', category: 'Lorem', description: 'Excepteur sint occaecat cupidatat non proident.', image_path: loremBox('Elit sed', 800, 560), year: '2023', featured: true, sort_order: 6 },
+]
+
+export const PLACEHOLDER_CONFIG: SiteConfig = {
+  id: 'default',
+  site_name: 'Lorem Ipsum',
+  tagline: 'Lorem ipsum dolor sit amet',
+  hero_title: 'It’s Lorem!',
+}
+
+export const PLACEHOLDER_TERMS: TermsSection[] = [
+  { id: 't1', title: '1. Lorem ipsum', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', sort_order: 1 },
+  { id: 't2', title: '2. Dolor sit', body: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.', sort_order: 2 },
+  { id: 't3', title: '3. Amet consectetur', body: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.', sort_order: 3 },
+  { id: 't4', title: '4. Adipiscing elit', body: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', sort_order: 4 },
+  { id: 't5', title: '5. Sed do eiusmod', body: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.', sort_order: 5 },
+  { id: 't6', title: '6. Tempor incididunt', body: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur.', sort_order: 6 },
+  { id: 't7', title: '7. Ut labore', body: 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.', sort_order: 7 },
 ]

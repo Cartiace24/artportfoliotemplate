@@ -2,6 +2,7 @@ import { motion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import type { AboutContent, SocialLink } from '../lib/types'
 import { publicArtUrl } from '../lib/supabase'
+import { SmartImage } from './SmartImage'
 import { Reveal, Tape } from './Bits'
 
 const PLATFORM_ICON: Record<string, string> = {
@@ -23,7 +24,13 @@ export function AboutPreview({ about }: { about: AboutContent }) {
         <div className="relative rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-2.5 rotate-[-2deg]">
           <Tape className="-top-3 left-1/2 -translate-x-1/2" />
           {img ? (
-            <img src={img} alt="Lorem ipsum portrait" className="rounded-xl w-full aspect-[4/5] object-cover art-img" loading="lazy" />
+            <SmartImage
+              path={about.profile_image_path}
+              alt="Lorem ipsum portrait"
+              width={600}
+              sizes="(max-width: 768px) 100vw, 280px"
+              className="rounded-xl w-full aspect-[4/5] object-cover art-img"
+            />
           ) : (
             <div className="rounded-xl w-full aspect-[4/5] bg-gradient-to-br from-[#e7ddf0] via-[#f2d8d3] to-[#dde5d2] grid place-items-center">
               <span className="font-hand text-[64px] text-[#5b2b4e]">lorem ♡</span>
@@ -85,15 +92,15 @@ export function SocialLinks({ socials }: { socials: SocialLink[] }) {
   )
 }
 
-export function Footer({ socials }: { socials: SocialLink[] }) {
+export function Footer({ socials, siteName, tagline }: { socials: SocialLink[]; siteName: string; tagline: string }) {
   return (
     <footer className="relative mt-16 border-t border-[#e6dcc8] bg-[#f6f0e2]/60">
       <div className="torn-edge absolute -top-[11px] inset-x-0 h-[12px] bg-[#f6f0e2]/60" aria-hidden />
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
-            <p className="font-hand text-[28px] font-bold text-[#40203f] -rotate-1">LOREM IPSUM</p>
-            <p className="font-hand text-[19px] text-[#8a6f5c]">lorem ipsum dolor sit amet! ♡</p>
+            <p className="font-hand text-[28px] font-bold text-[#40203f] -rotate-1">{siteName.toUpperCase()}</p>
+            <p className="font-hand text-[19px] text-[#8a6f5c]">{tagline} ♡</p>
           </div>
           <nav className="flex gap-6 text-[14px] font-semibold text-[#5b2b4e]" aria-label="Footer">
             <Link to="/" className="hover:underline">Portfolio</Link>
@@ -111,7 +118,7 @@ export function Footer({ socials }: { socials: SocialLink[] }) {
           </div>
         </div>
         <p className="mt-8 text-center text-[12.5px] tracking-wide text-[#8d857a]">
-          LOREM IPSUM <span className="mx-2">•</span> Lorem ipsum dolor sit amet <span className="mx-2">•</span> {new Date().getFullYear()} <span className="mx-2">•</span> ♡
+          {siteName.toUpperCase()} <span className="mx-2">•</span> {tagline} <span className="mx-2">•</span> {new Date().getFullYear()} <span className="mx-2">•</span> ♡
         </p>
       </div>
     </footer>

@@ -1,20 +1,41 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Check, Clock, Heart, Mail, Send } from 'lucide-react'
+import { Check, Clock, Heart, Loader2, Mail, Send, TriangleAlert } from 'lucide-react'
 import { CommissionProcess } from '../components/Commissions'
 import { Reveal, SectionHeading, Tape } from '../components/Bits'
 import { ConfigError, InlineError } from '../components/States'
-import { usePricing, useSiteSettings } from '../hooks/useSiteContent'
+import { PageMeta } from '../lib/meta'
+import { submitCommissionRequest } from '../lib/requests'
+import { usePricing, useSiteConfig, useSiteSettings } from '../hooks/useSiteContent'
 
 export function Commissions() {
   const { settings, error: settingsError } = useSiteSettings()
   const { categories, prices, loading: priceLoading, error: priceError, isMisconfigured } = usePricing()
-  const [form, setForm] = useState({ name: '', contact: '', type: 'Lorem — Half ($15)', details: '' })
+  const { config } = useSiteConfig()
+  const [form, setForm] = useState({ name: '', contact: '', type: 'Lorem — Half ($15)', details: '', website: '' })
   const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [sendError, setSendError] = useState<string | null>(null)
   const open = settings.commission_status === 'open'
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (sending) return
+    setSending(true)
+    setSendError(null)
+    const r = await submitCommissionRequest(form)
+    setSending(false)
+    if (r.ok) setSent(true)
+    else setSendError(r.error ?? 'Please try again.')
+  }
 
   return (
     <main id="main" className="pt-[100px] mx-auto max-w-[1080px] px-4 sm:px-6 pb-8">
+      <PageMeta
+        title={`${config.site_name} — Lorem Ipsum`}
+        description={settings.commission_message ?? config.tagline}
+        path="/commissions"
+      />
       <Reveal>
         <p className="font-hand text-[22px] text-[#8a6f5c] -rotate-1">lorem ipsum dolor sit amet…</p>
         <h1 className="font-serif-ed text-[44px] md:text-[60px] leading-none text-[#40203f] font-semibold mt-1">
@@ -129,16 +150,23 @@ export function Commissions() {
             <div className="mt-4 rounded-xl bg-[#FAF6EF]/12 border border-white/20 p-5 text-center" role="status">
               <Heart className="w-8 h-8 mx-auto" aria-hidden />
               <p className="font-serif-ed italic text-[20px] mt-2">Thank you, {form.name || 'lorem'}!</p>
-              <p className="text-[14px] opacity-85 mt-1">This demo form doesn&rsquo;t send email yet — message me on any social with your idea and I&rsquo;ll reply within a few days ♡</p>
+              <p className="text-[14px] opacity-85 mt-1">Your request is in the inbox — expect a reply within a few days ♡</p>
             </div>
           ) : (
             <form
               className="mt-4 space-y-3"
-              onSubmit={(e) => {
-                e.preventDefault()
-                setSent(true)
-              }}
+              onSubmit={onSubmit}
             >
+              {/* Honeypot — invisible to humans, catches bots. */}
+              <input
+                type="text"
+                value={form.website}
+                onChange={(e) => setForm({ ...form, website: e.target.value })}
+                className="sr-only"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
               <div className="grid sm:grid-cols-2 gap-3">
                 <label className="block">
                   <span className="text-[12.5px] font-bold uppercase tracking-wider opacity-70">Your name</span>
@@ -168,10 +196,15 @@ export function Commissions() {
                   className="mt-1 w-full rounded-xl bg-[#FAF6EF]/12 border border-white/25 px-4 py-2.5 placeholder:text-white/40"
                   placeholder="Lorem ipsum dolor sit amet…" />
               </label>
-              <button className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-[#FAF6EF] text-[#40203f] font-bold py-3 hover:-translate-y-0.5 transition-transform min-h-[48px]">
-                <Send className="w-4 h-4" aria-hidden /> {open ? 'Send request ♡' : 'Join the waitlist ♡'}
+              <button disabled={sending} className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-[#FAF6EF] text-[#40203f] font-bold py-3 hover:-translate-y-0.5 transition-transform min-h-[48px] disabled:opacity-70 disabled:hover:translate-y-0">
+                {sending ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Send className="w-4 h-4" aria-hidden />} {sending ? 'Sending…' : open ? 'Send request ♡' : 'Join the waitlist ♡'}
               </button>
-              <p className="text-[12px] opacity-60 flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> Demo form — wire it to your email or Discord webhook anytime.</p>
+              {sendError && (
+                <p className="rounded-xl bg-red-900/40 border border-white/25 px-4 py-2.5 text-[13.5px] font-semibold flex items-center gap-2" role="alert">
+                  <TriangleAlert className="w-4 h-4 shrink-0" aria-hidden /> {sendError}
+                </p>
+              )}
+              <p className="text-[12px] opacity-60 flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" aria-hidden /> Requests land in the studio inbox ♡</p>
             </form>
           )}
         </div>

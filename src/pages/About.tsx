@@ -1,16 +1,23 @@
 import { AboutPreview, SocialLinks } from '../components/About'
 import { Reveal, Tape } from '../components/Bits'
 import { ConfigError } from '../components/States'
-import { useAbout, useArtworks, useSocials } from '../hooks/useSiteContent'
-import { publicArtUrl } from '../lib/supabase'
+import { SmartImage } from '../components/SmartImage'
+import { PageMeta } from '../lib/meta'
+import { useAbout, useArtworks, useSiteConfig, useSocials } from '../hooks/useSiteContent'
 
 export function About() {
   const { about, isMisconfigured } = useAbout()
   const { socials } = useSocials()
   const { artworks } = useArtworks(false)
+  const { config } = useSiteConfig()
 
   return (
     <main id="main" className="pt-[110px] mx-auto max-w-[1080px] px-4 sm:px-6 pb-10">
+      <PageMeta
+        title={`${config.site_name} — About Lorem`}
+        description={about.short_description ?? config.tagline}
+        path="/about"
+      />
       {isMisconfigured && (
         <div className="mb-4">
           <ConfigError compact />
@@ -61,8 +68,13 @@ export function About() {
         <div className="mt-8 grid grid-cols-2 gap-4">
           {[artworks[1], artworks[2]].filter(Boolean).map((a, i) => (
             <Reveal key={a!.id} delay={i}>
-              <img src={publicArtUrl(a!.image_path) ?? ''} alt={a!.title} loading="lazy"
-                className={`rounded-2xl border border-[#e6dcc8] print-shadow w-full h-56 sm:h-72 object-cover ${i ? 'rotate-[0.7deg]' : 'rotate-[-0.7deg]'}`} />
+              <SmartImage
+                path={a!.image_path}
+                alt={a!.title}
+                width={800}
+                sizes="(max-width: 768px) 50vw, 33vw"
+                className={`rounded-2xl border border-[#e6dcc8] print-shadow w-full h-56 sm:h-72 object-cover ${i ? 'rotate-[0.7deg]' : 'rotate-[-0.7deg]'}`}
+              />
             </Reveal>
           ))}
         </div>

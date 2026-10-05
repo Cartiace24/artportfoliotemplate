@@ -1,13 +1,18 @@
+import { Suspense, lazy } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
+import { Loader2 } from 'lucide-react'
 import { Header } from './components/Header'
 import { Footer } from './components/About'
 import { Home } from './pages/Home'
 import { Commissions } from './pages/Commissions'
 import { About } from './pages/About'
 import { Terms } from './pages/Terms'
-import { Manage } from './pages/Manage'
-import { useSiteSettings, useSocials } from './hooks/useSiteContent'
+import { useSiteConfig, useSiteSettings, useSocials } from './hooks/useSiteContent'
+
+// The studio is code-split: public visitors never download the
+// management UI (~40% of the bundle).
+const Manage = lazy(() => import('./pages/Manage').then((m) => ({ default: m.Manage })))
 
 function ScrollTop() {
   const { pathname } = useLocation()
@@ -20,15 +25,26 @@ function ScrollTop() {
 function PublicShell({ children }: { children: React.ReactNode }) {
   const { settings } = useSiteSettings()
   const { socials } = useSocials()
+  const { config } = useSiteConfig()
   return (
     <div className="paper-grain min-h-dvh flex flex-col">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-[#40203f] focus:text-white focus:px-4 focus:py-2 focus:rounded-full">
         Skip to content
       </a>
-      <Header settings={settings} />
+      <Header settings={settings} siteName={config.site_name} />
       <div className="flex-1">{children}</div>
-      <Footer socials={socials} />
+      <Footer socials={socials} siteName={config.site_name} tagline={config.tagline} />
     </div>
+  )
+}
+
+function StudioLoading() {
+  return (
+    <main className="min-h-dvh grid place-items-center px-4">
+      <p className="font-hand text-[26px] text-[#8a6f5c] flex items-center gap-3">
+        <Loader2 className="w-6 h-6 animate-spin" aria-hidden /> opening your studio…
+      </p>
+    </main>
   )
 }
 
@@ -45,7 +61,9 @@ export default function App() {
           path="/manage/:token"
           element={
             <div className="paper-grain min-h-dvh bg-[#FAF6EF]">
-              <Manage />
+              <Suspense fallback={<StudioLoading />}>
+                <Manage />
+              </Suspense>
             </div>
           }
         />

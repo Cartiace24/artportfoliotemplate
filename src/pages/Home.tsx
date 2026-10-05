@@ -7,7 +7,9 @@ import { CommissionPreview, CommissionProcess } from '../components/Commissions'
 import { AboutPreview, SocialLinks } from '../components/About'
 import { Reveal, SectionHeading } from '../components/Bits'
 import { ConfigError, EmptyGallery, GallerySkeleton, InlineError } from '../components/States'
-import { useAbout, useArtworks, usePricing, useSiteSettings, useSocials } from '../hooks/useSiteContent'
+import { PageMeta } from '../lib/meta'
+import { publicArtUrl } from '../lib/supabase'
+import { useAbout, useArtworks, usePricing, useSiteConfig, useSiteSettings, useSocials } from '../hooks/useSiteContent'
 import type { Artwork } from '../lib/types'
 
 export function Home() {
@@ -16,11 +18,19 @@ export function Home() {
   const { categories, prices, loading: priceLoading, error: priceError } = usePricing()
   const { about } = useAbout()
   const { socials } = useSocials()
+  const { config } = useSiteConfig()
   const [viewer, setViewer] = useState<Artwork | null>(null)
+  const heroArt = artworks[0] ?? null
 
   return (
     <main id="main">
-      <Hero settings={settings} heroArt={artworks[0] ?? null} />
+      <PageMeta
+        title={`${config.site_name} — ${config.tagline}`}
+        description={config.tagline}
+        image={heroArt ? publicArtUrl(heroArt.image_path) : null}
+        path="/"
+      />
+      <Hero settings={settings} heroArt={heroArt} config={config} />
 
       {isMisconfigured && (
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 pt-4">

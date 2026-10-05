@@ -5,15 +5,19 @@ import {
   PLACEHOLDER_ABOUT,
   PLACEHOLDER_ARTWORKS,
   PLACEHOLDER_CATEGORIES,
+  PLACEHOLDER_CONFIG,
   PLACEHOLDER_PRICES,
   PLACEHOLDER_SETTINGS,
   PLACEHOLDER_SOCIALS,
+  PLACEHOLDER_TERMS,
   type AboutContent,
   type Artwork,
   type CommissionCategory,
   type CommissionPrice,
+  type SiteConfig,
   type SiteSettings,
   type SocialLink,
+  type TermsSection,
 } from '../lib/types'
 
 export interface QueryState<T> {
@@ -253,4 +257,78 @@ export function useSocials(): QueryState<SocialLink[]> & { socials: SocialLink[]
   }, [])
 
   return { ...state, socials: state.data }
+}
+
+export function useSiteConfig(): QueryState<SiteConfig> & {
+  config: SiteConfig
+  setConfig: (c: SiteConfig) => void
+} {
+  const [state, setState] = useState<QueryState<SiteConfig>>(() =>
+    !isSupabaseConfigured
+      ? isDemoAllowed
+        ? demoState(PLACEHOLDER_CONFIG)
+        : misconfiguredState(PLACEHOLDER_CONFIG)
+      : { data: PLACEHOLDER_CONFIG, loading: true, error: null, isDemo: false, isMisconfigured: false }
+  )
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+    let cancelled = false
+    ;(async () => {
+      try {
+        await throwIfMisconfigured()
+        const sb = getSupabase()!
+        const { data, error } = await sb.from('site_config').select('*').limit(1).maybeSingle()
+        if (cancelled) return
+        if (error) throw error
+        if (data) setState({ data: data as SiteConfig, loading: false, error: null, isDemo: false, isMisconfigured: false })
+        else setState((s) => ({ ...s, loading: false }))
+      } catch {
+        if (!cancelled) setState((s) => ({ ...s, loading: false, error: null }))
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  return {
+    ...state,
+    config: state.data,
+    setConfig: (c: SiteConfig) => setState((s) => ({ ...s, data: c })),
+  }
+}
+
+export function useTerms(): QueryState<TermsSection[]> & { sections: TermsSection[] } {
+  const [state, setState] = useState<QueryState<TermsSection[]>>(() =>
+    !isSupabaseConfigured
+      ? isDemoAllowed
+        ? demoState(PLACEHOLDER_TERMS)
+        : misconfiguredState([])
+      : { data: [], loading: true, error: null, isDemo: false, isMisconfigured: false }
+  )
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return
+    let cancelled = false
+    ;(async () => {
+      try {
+        await throwIfMisconfigured()
+        const sb = getSupabase()!
+        const { data, error } = await sb.from('terms_sections').select('*').order('sort_order')
+        if (cancelled) return
+        if (error) throw error
+        setState({ data: (data ?? []) as TermsSection[], loading: false, error: null, isDemo: false, isMisconfigured: false })
+      } catch {
+        if (!cancelled) {
+          setState((s) => ({ ...s, loading: false, error: "Couldn't load this page. Please refresh and try again." }))
+        }
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  return { ...state, sections: state.data }
 }

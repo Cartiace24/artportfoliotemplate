@@ -8,7 +8,7 @@ function statusPill(status: SiteSettings['commission_status']) {
   return status === 'open' ? 'Commissions Open' : 'Commissions Closed'
 }
 
-export function Header({ settings }: { settings: SiteSettings }) {
+export function Header({ settings, siteName }: { settings: SiteSettings; siteName: string }) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const loc = useLocation()
@@ -61,9 +61,9 @@ export function Header({ settings }: { settings: SiteSettings }) {
             scrolled ? 'h-[60px]' : 'h-[76px]'
           }`}
         >
-          <Link to="/" className="flex items-center gap-2 group" aria-label="Lorem Ipsum home">
+          <Link to="/" className="flex items-center gap-2 group" aria-label={`${siteName} home`}>
             <span className="font-hand text-[30px] leading-none font-bold tracking-tight text-[#40203f] -rotate-2 group-hover:rotate-0 transition-transform">
-              LOREM IPSUM
+              {siteName.toUpperCase()}
             </span>
             <svg viewBox="0 0 24 24" className="w-5 h-5 text-[#5b2b4e]" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
               <path d="M12 21 c-5 -4 -8 -7 -8 -11 a4.5 4.5 0 0 1 8 -3 a4.5 4.5 0 0 1 8 3 c0 4 -3 7 -8 11" />
