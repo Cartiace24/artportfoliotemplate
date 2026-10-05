@@ -4,15 +4,16 @@ import { ArrowUpRight } from 'lucide-react'
 import type { AboutContent, SocialLink } from '../lib/types'
 import { publicArtUrl } from '../lib/supabase'
 import { SmartImage } from './SmartImage'
-import { Eyebrow, Reveal } from './Bits'
+import { Eyebrow, Note, Reveal, Tape } from './Bits'
 
 export function AboutPreview({ about }: { about: AboutContent }) {
   const img = publicArtUrl(about.profile_image_path)
   return (
     <div className="grid md:grid-cols-12 gap-8 md:gap-10 items-start">
       <Reveal className="md:col-span-4">
-        <figure>
-          <div className="frame bg-parchment overflow-hidden">
+        <figure className="relative -rotate-1">
+          <div className="mat lift">
+            <Tape tone="paper" className="-top-3 left-1/2 -translate-x-1/2 rotate-2" />
             {img ? (
               <SmartImage
                 path={about.profile_image_path}
@@ -22,44 +23,45 @@ export function AboutPreview({ about }: { about: AboutContent }) {
                 className="w-full aspect-[4/5] object-cover"
               />
             ) : (
-              <div className="w-full aspect-[4/5] grid place-items-center">
+              <div className="w-full aspect-[4/5] grid place-items-center bg-parchment">
                 <span className="font-display italic text-[28px] text-muted">Portrait</span>
               </div>
             )}
           </div>
-          <figcaption className="pt-2.5 mt-3 border-t border-ink font-mono text-[11px] tracking-[0.14em] uppercase text-muted">
-            The artist
+          <figcaption className="flex items-baseline justify-between gap-3 pt-2">
+            <span className="font-note text-[20px] text-ink">that's me!</span>
+            <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted">fig. you</span>
           </figcaption>
         </figure>
       </Reveal>
       <div className="md:col-span-8">
         <Reveal>
-          <Eyebrow>Profile</Eyebrow>
+          <Eyebrow>Profile — a sketchbook entry</Eyebrow>
           <p className="mt-3 font-display text-[24px] md:text-[28px] leading-[1.35] text-ink max-w-[38ch]">
             {about.bio}
           </p>
         </Reveal>
         <Reveal delay={1}>
           <dl className="mt-8 grid sm:grid-cols-2 gap-x-8">
-            <div className="border-t border-line py-4">
-              <dt className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted">Focus</dt>
+            <div className="border-t-2 border-ink py-4">
+              <dt className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted">I draw</dt>
               <dd className="mt-2 text-[14.5px] leading-relaxed text-ink">
                 {about.subjects.length ? about.subjects.join(' · ') : '—'}
               </dd>
             </div>
-            <div className="border-t border-line py-4">
-              <dt className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted">Also into</dt>
+            <div className="border-t-2 border-ink py-4">
+              <dt className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted">Into lately</dt>
               <dd className="mt-2 text-[14.5px] leading-relaxed text-ink">
                 {about.interests.length ? about.interests.join(' · ') : '—'}
               </dd>
             </div>
           </dl>
           {about.signature && (
-            <p className="mt-6 font-display italic text-[24px] text-ink">{about.signature}</p>
+            <p className="mt-6 font-note text-[30px] text-ink -rotate-1">{about.signature}</p>
           )}
           <Link
             to="/about"
-            className="mt-4 inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink underline underline-offset-[6px] decoration-accent decoration-2 hover:text-accent-deep transition-colors min-h-[44px]"
+            className="link-wavy mt-4 inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink hover:text-accent-deep transition-colors min-h-[44px] decoration-accent"
           >
             Full profile <ArrowUpRight className="w-4 h-4" aria-hidden />
           </Link>
@@ -73,40 +75,37 @@ export function SocialLinks({ socials }: { socials: SocialLink[] }) {
   const live = socials.filter((s) => s.enabled && s.url && s.url !== '#')
   if (!live.length) {
     return (
-      <p className="font-mono text-[12px] tracking-[0.14em] uppercase text-muted">
-        Links coming soon
-      </p>
+      <Note className="text-[20px] text-center">links still drying… check back soon!</Note>
     )
   }
   return (
-    <motion.ul
+    <motion.div
       initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
     >
-      {live.map((s, i) => (
-        <li key={s.id}>
-          <a
-            href={s.url}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`${s.platform}${s.display_name ? ` — ${s.display_name}` : ''}`}
-            title={s.display_name || s.platform}
-            className="group inline-flex items-baseline gap-2 py-2 min-h-[44px]"
-          >
-            <span className="font-mono text-[11px] text-accent" aria-hidden>
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <span className="font-display text-[22px] text-ink group-hover:text-accent-deep transition-colors">
-              {s.platform}
-            </span>
-            <ArrowUpRight className="w-4 h-4 self-center text-muted group-hover:text-accent-deep group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" aria-hidden />
-          </a>
-        </li>
-      ))}
-    </motion.ul>
+      <Note className="text-[21px] text-center -rotate-1 mb-2">find me here — say hi!</Note>
+      <ul className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
+        {live.map((s, i) => (
+          <li key={s.id} className={i % 2 ? 'rotate-1' : '-rotate-1'}>
+            <a
+              href={s.url}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`${s.platform}${s.display_name ? ` — ${s.display_name}` : ''}`}
+              title={s.display_name || s.platform}
+              className="group inline-flex items-baseline gap-1.5 py-2 min-h-[44px]"
+            >
+              <span className="font-display text-[24px] text-ink group-hover:text-accent-deep transition-colors">
+                {s.platform}
+              </span>
+              <ArrowUpRight className="w-4 h-4 self-center text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" aria-hidden />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </motion.div>
   )
 }
 
@@ -118,7 +117,7 @@ export function Footer({ socials, siteName, tagline }: { socials: SocialLink[]; 
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-5">
             <p className="font-display italic text-[30px] leading-none text-ink">{siteName}</p>
-            <p className="mt-3 text-[14px] leading-relaxed text-ink-soft max-w-[36ch]">{tagline}</p>
+            <p className="mt-3 font-note text-[20px] text-muted -rotate-1 max-w-[30ch]">{tagline} — thanks for stopping by!</p>
           </div>
           <nav className="md:col-span-3 flex flex-col gap-1" aria-label="Footer">
             {[
@@ -155,7 +154,7 @@ export function Footer({ socials, siteName, tagline }: { socials: SocialLink[]; 
                 ))}
               </ul>
             ) : (
-              <p className="text-[14px] text-muted">Links coming soon.</p>
+              <p className="font-note text-[19px] text-muted">links still drying…</p>
             )}
           </div>
         </div>
@@ -163,9 +162,7 @@ export function Footer({ socials, siteName, tagline }: { socials: SocialLink[]; 
           <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-muted">
             © {new Date().getFullYear()} {siteName}
           </p>
-          <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-muted">
-            {tagline}
-          </p>
+          <p className="font-note text-[18px] text-muted">made by hand, not by template</p>
         </div>
       </div>
     </footer>

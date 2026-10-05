@@ -2,16 +2,18 @@ import { useState } from 'react'
 import { motion } from 'motion/react'
 import { Check, Loader2, TriangleAlert } from 'lucide-react'
 import { CommissionProcess } from '../components/Commissions'
-import { Eyebrow, Reveal, SectionHead } from '../components/Bits'
+import { Eyebrow, Note, Reveal, SectionHead, Stamp, Tape } from '../components/Bits'
 import { ConfigError, InlineError } from '../components/States'
 import { PageMeta } from '../lib/meta'
+import { SmartImage } from '../components/SmartImage'
 import { submitCommissionRequest } from '../lib/requests'
-import { usePricing, useSiteConfig, useSiteSettings } from '../hooks/useSiteContent'
+import { useArtworks, usePricing, useSiteConfig, useSiteSettings } from '../hooks/useSiteContent'
 
 export function Commissions() {
   const { settings, error: settingsError } = useSiteSettings()
   const { categories, prices, loading: priceLoading, error: priceError, isMisconfigured } = usePricing()
   const { config } = useSiteConfig()
+  const { artworks } = useArtworks(false)
   const [form, setForm] = useState({ name: '', contact: '', type: 'Lorem — Half ($15)', details: '', website: '' })
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
@@ -42,15 +44,10 @@ export function Commissions() {
           <h1 className="font-display text-[clamp(2.8rem,7vw,4.5rem)] leading-[1] text-ink mt-3">
             Commissions
           </h1>
-          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2" role="status">
-            <span className="inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.14em] uppercase">
-              <span className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-moss' : 'bg-accent'}`} aria-hidden />
-              <span className={open ? 'text-ink' : 'text-accent-deep'}>
-                {open ? 'Open for work' : 'Books closed'}
-              </span>
-            </span>
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3" role="status">
+            <Stamp tone={open ? 'moss' : 'accent'}>{open ? 'Open' : 'Closed'}</Stamp>
             {open && settings.available_slots != null && (
-              <span className="font-mono text-[12px] text-muted">{settings.available_slots} slots left</span>
+              <span className="font-note text-[20px] text-muted">— {settings.available_slots} slots left!</span>
             )}
           </div>
           {settings.commission_message && (
@@ -67,6 +64,20 @@ export function Commissions() {
       {isMisconfigured && (
         <div className="mt-6">
           <ConfigError compact />
+        </div>
+      )}
+
+      {artworks.length > 0 && (
+        <div className="mt-10">
+          <Note className="text-[20px] -rotate-1 mb-3">recent stuff, so you know my hand ↓</Note>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {artworks.slice(0, 4).map((a, i) => (
+              <figure key={a.id} className={`relative bg-cream border border-line p-1.5 ${i % 2 ? 'rotate-1' : '-rotate-1'}`}>
+                <Tape tone={i % 2 ? 'moss' : 'paper'} className="-top-2.5 left-1/2 -translate-x-1/2 !w-[64px] !h-[20px]" />
+                <SmartImage path={a.image_path} alt={a.title} width={500} sizes="(max-width: 640px) 50vw, 25vw" className="w-full aspect-square object-cover" />
+              </figure>
+            ))}
+          </div>
         </div>
       )}
 
@@ -136,7 +147,8 @@ export function Commissions() {
       </section>
 
       <section className="mt-16 grid lg:grid-cols-2 gap-8">
-        <div className="border border-line bg-cream p-6 sm:p-8">
+        <div className="relative border border-line bg-cream p-6 sm:p-8 -rotate-[0.4deg]">
+          <Tape tone="accent" className="-top-3 left-10 -rotate-3" />
           <Eyebrow>Good to know</Eyebrow>
           <ul className="mt-4 space-y-3 text-[14.5px] leading-relaxed text-ink-soft">
             {[
@@ -157,7 +169,8 @@ export function Commissions() {
           </p>
         </div>
 
-        <div className="bg-ink text-cream p-6 sm:p-8">
+        <div className="relative bg-ink text-cream p-6 sm:p-8 rotate-[0.4deg]">
+          <Note className="text-[19px] text-cream/60 rotate-1 mb-1">i reply within a few days!</Note>
           <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-cream/60">Request a slot</p>
           <h2 className="font-display italic text-[30px] mt-2">Start a piece</h2>
           {sent ? (

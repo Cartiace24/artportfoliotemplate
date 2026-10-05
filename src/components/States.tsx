@@ -46,11 +46,11 @@ export function GallerySkeleton() {
 
 export function EmptyGallery() {
   return (
-    <div className="border border-dashed border-muted/60 px-6 py-14 text-center">
-      <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">No works yet</p>
-      <p className="mt-3 font-display text-[26px] text-ink">The walls are being hung.</p>
+    <div className="relative border border-dashed border-muted/60 bg-cream/60 px-6 py-14 text-center -rotate-[0.3deg]">
+      <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Nothing pinned yet</p>
+      <p className="mt-3 font-note text-[30px] text-ink">the wall is waiting for its first piece…</p>
       <p className="mt-2 text-[14px] text-ink-soft">
-        Meanwhile, <Link to="/commissions" className="font-semibold text-ink underline underline-offset-[5px] decoration-accent decoration-2">see what can be commissioned</Link>.
+        Meanwhile, <Link to="/commissions" className="link-wavy font-semibold text-ink decoration-accent">see what can be commissioned</Link>.
       </p>
     </div>
   )

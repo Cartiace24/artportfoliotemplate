@@ -1,5 +1,5 @@
 import { AboutPreview, SocialLinks } from '../components/About'
-import { Eyebrow, Reveal, SectionHead } from '../components/Bits'
+import { Eyebrow, Note, Reveal, SectionHead, Tape } from '../components/Bits'
 import { ConfigError } from '../components/States'
 import { SmartImage } from '../components/SmartImage'
 import { PageMeta } from '../lib/meta'
@@ -38,11 +38,13 @@ export function About() {
       </div>
 
       {(artworks[1] || artworks[2]) && (
-        <div className="mt-12 grid grid-cols-2 gap-4 sm:gap-6">
-          {[artworks[1], artworks[2]].filter(Boolean).map((a) => (
-            <Reveal key={a!.id}>
-              <figure>
-                <div className="frame bg-parchment overflow-hidden">
+        <div className="mt-12">
+          <Note className="text-[20px] -rotate-1 mb-4">some old favourites ↓</Note>
+          <div className="grid grid-cols-2 gap-4 sm:gap-6">
+            {[artworks[1], artworks[2]].filter(Boolean).map((a, i) => (
+              <Reveal key={a!.id}>
+                <figure className={`relative bg-cream border border-line p-2 ${i ? 'rotate-1' : '-rotate-1'}`}>
+                  <Tape tone={i ? 'moss' : 'accent'} className="-top-2.5 left-1/2 -translate-x-1/2 !w-[72px] !h-[22px]" />
                   <SmartImage
                     path={a!.image_path}
                     alt={a!.title}
@@ -50,13 +52,13 @@ export function About() {
                     sizes="(max-width: 768px) 50vw, 33vw"
                     className="w-full h-56 sm:h-72 object-cover"
                   />
-                </div>
-                <figcaption className="pt-2 mt-2.5 border-t border-ink font-mono text-[11px] tracking-[0.14em] uppercase text-muted truncate">
-                  {a!.title}
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
+                  <figcaption className="pt-1.5 font-note text-[19px] text-ink truncate">
+                    {a!.title}
+                  </figcaption>
+                </figure>
+              </Reveal>
+            ))}
+          </div>
         </div>
       )}
 

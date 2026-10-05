@@ -38,7 +38,7 @@ export function Home() {
 
       {/* 01 — Work */}
       <section id="work" aria-label="Selected work" className="mx-auto max-w-[1280px] px-4 sm:px-6 pt-14 md:pt-20 scroll-mt-16">
-        <SectionHead index="01" title="Selected Work" note={`${artworks.length} pieces`} />
+            <SectionHead index="01" title="The Wall" note={`${artworks.length} pieces pinned`} />
         {artLoading || settingsLoading ? (
           <GallerySkeleton />
         ) : artError ? (
@@ -64,9 +64,10 @@ export function Home() {
             ) : priceError ? (
               <InlineError message={priceError} />
             ) : (
-              <CommissionPreview settings={settings} categories={categories} prices={prices} />
+              <CommissionPreview settings={settings} categories={categories} prices={prices} examples={artworks} />
             )}
           </Reveal>
+          <p className="mt-3 font-note text-[20px] text-muted text-right -rotate-1">picked fresh from the wall ↓</p>
           <div className="lg:col-span-7">
             <Reveal delay={1}>
               <Eyebrow className="mb-4">How it works</Eyebrow>

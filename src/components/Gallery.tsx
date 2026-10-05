@@ -3,28 +3,36 @@ import { ArrowLeft, ArrowRight, X } from 'lucide-react'
 import { useCallback, useEffect, useRef } from 'react'
 import type { Artwork } from '../lib/types'
 import { SmartImage } from './SmartImage'
+import { Tape } from './Bits'
 
-const LAYOUT = [
-  { span: 'md:col-span-12', aspect: 'aspect-[4/3] md:aspect-[21/9]' },
-  { span: 'md:col-span-7', aspect: 'aspect-[4/3]' },
-  { span: 'md:col-span-5', aspect: 'aspect-[4/3] md:aspect-[3/4]' },
-  { span: 'md:col-span-5', aspect: 'aspect-[4/3]' },
-  { span: 'md:col-span-7', aspect: 'aspect-[4/3] md:aspect-[16/10]' },
-  { span: 'md:col-span-12', aspect: 'aspect-[4/3] md:aspect-[21/9]' },
+interface WallSlot {
+  span: string
+  aspect: string
+  rotate: string
+  mat: boolean
+  tape: 'accent' | 'moss' | 'paper' | null
+  offset: string
+}
+
+const WALL: WallSlot[] = [
+  { span: 'md:col-span-12', aspect: 'aspect-[4/3] md:aspect-[21/9]', rotate: '', mat: false, tape: null, offset: '' },
+  { span: 'md:col-span-7', aspect: 'aspect-[4/3]', rotate: 'md:-rotate-1', mat: true, tape: 'accent', offset: '' },
+  { span: 'md:col-span-5', aspect: 'aspect-[4/3] md:aspect-[3/4]', rotate: 'md:rotate-1', mat: true, tape: 'moss', offset: 'md:mt-14' },
+  { span: 'md:col-span-5', aspect: 'aspect-[4/3]', rotate: 'md:-rotate-[0.5deg]', mat: false, tape: null, offset: '' },
+  { span: 'md:col-span-7', aspect: 'aspect-[4/3] md:aspect-[16/10]', rotate: 'md:rotate-[0.5deg]', mat: true, tape: 'paper', offset: 'md:-mt-6' },
+  { span: 'md:col-span-12', aspect: 'aspect-[4/3] md:aspect-[21/9]', rotate: '', mat: false, tape: null, offset: '' },
 ]
 
 export function ArtworkCard({
   art,
   onOpen,
   index,
-  span,
-  aspect,
+  slot,
 }: {
   art: Artwork
   onOpen: (art: Artwork) => void
   index: number
-  span?: string
-  aspect?: string
+  slot: WallSlot
 }) {
   const num = String(index + 1).padStart(2, '0')
   return (
@@ -33,7 +41,7 @@ export function ArtworkCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.55, delay: (index % 3) * 0.07, ease: [0.22, 1, 0.36, 1] }}
-      className={span ?? ''}
+      className={`${slot.span} ${slot.offset} ${slot.rotate}`}
     >
       <button
         onClick={() => onOpen(art)}
@@ -41,24 +49,25 @@ export function ArtworkCard({
         aria-label={`Open ${art.title} (${art.category}) — view larger`}
         aria-haspopup="dialog"
       >
-        <span className="frame block overflow-hidden bg-parchment">
+        <span className={`relative block ${slot.mat ? 'mat lift' : 'frame'} overflow-hidden bg-parchment`}>
+          {slot.tape && <Tape tone={slot.tape} className="-top-3 left-1/2 -translate-x-1/2 -rotate-3 !w-[80px]" />}
           <SmartImage
             path={art.image_path}
             alt={`${art.title} — ${art.category}`}
-            width={index === 0 ? 1600 : 1000}
-            sizes={index === 0 ? '100vw' : '(max-width: 768px) 100vw, 50vw'}
-            className={`w-full ${aspect ?? 'aspect-[4/3]'} object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]`}
+            width={slot.span.includes('12') ? 1600 : 1000}
+            sizes={slot.span.includes('12') ? '100vw' : '(max-width: 768px) 100vw, 50vw'}
+            className={`w-full ${slot.aspect} object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]`}
           />
         </span>
-        <figcaption className="flex items-baseline justify-between gap-3 pt-2.5 border-t border-ink mt-3">
-          <span className="flex items-baseline gap-2.5 min-w-0">
+        <figcaption className="flex items-baseline justify-between gap-3 pt-2">
+          <span className="flex items-baseline gap-2 min-w-0">
             <span className="font-mono text-[11px] text-accent shrink-0" aria-hidden>{num}</span>
-            <span className="font-display text-[20px] leading-tight text-ink truncate group-hover:text-accent-deep transition-colors">
+            <span className="font-note text-[21px] leading-tight text-ink truncate group-hover:text-accent-deep transition-colors">
               {art.title}
             </span>
           </span>
           <span className="font-mono text-[11px] tracking-[0.1em] uppercase text-muted shrink-0">
-            {art.category}{art.year ? ` — ${art.year}` : ''}
+            {art.category}{art.year ? ` ’${art.year.slice(2)}` : ''}
           </span>
         </figcaption>
       </button>
@@ -68,11 +77,10 @@ export function ArtworkCard({
 
 export function FeaturedGallery({ artworks, onOpen }: { artworks: Artwork[]; onOpen: (a: Artwork) => void }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-10 md:gap-y-14">
-      {artworks.slice(0, 6).map((a, i) => {
-        const layout = LAYOUT[i % LAYOUT.length]!
-        return <ArtworkCard key={a.id} art={a} onOpen={onOpen} index={i} span={layout.span} aspect={layout.aspect} />
-      })}
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-12 md:gap-y-8">
+      {artworks.slice(0, 6).map((a, i) => (
+        <ArtworkCard key={a.id} art={a} onOpen={onOpen} index={i} slot={WALL[i % WALL.length]!} />
+      ))}
     </div>
   )
 }
@@ -156,9 +164,9 @@ export function ArtworkViewer({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 12, opacity: 0 }}
             transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-full max-w-5xl max-h-[92dvh] overflow-auto bg-paper border border-line p-4 sm:p-6"
+            className="relative w-full max-w-5xl max-h-[92dvh] overflow-auto bg-paper p-4 sm:p-6"
           >
-            <div className="flex items-center justify-between gap-3 pb-3 border-b border-line">
+            <div className="flex items-center justify-between gap-3 pb-3 border-b border-ink">
               <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted">
                 Fig. {String(idx + 1).padStart(2, '0')} / {String(artworks.length).padStart(2, '0')}
               </p>
@@ -172,13 +180,13 @@ export function ArtworkViewer({
               </button>
             </div>
             <div className="pt-4">
-              <h3 className="font-display text-[28px] sm:text-[34px] leading-tight text-ink">{art.title}</h3>
+              <h3 className="font-note text-[30px] sm:text-[34px] leading-tight text-ink">{art.title}</h3>
               <p className="mt-1 font-mono text-[11px] tracking-[0.14em] uppercase text-muted">
                 {art.category}{art.year ? ` — ${art.year}` : ''}
               </p>
               {art.description && <p className="text-[14.5px] leading-relaxed text-ink-soft mt-3 max-w-[62ch]">{art.description}</p>}
             </div>
-            <div className="frame mt-4 overflow-hidden bg-parchment min-h-[240px] sm:min-h-[320px]">
+            <div className="mat mt-4 overflow-hidden bg-parchment min-h-[240px] sm:min-h-[320px]">
               <SmartImage
                 path={art.image_path}
                 alt={`${art.title} full view`}

@@ -45,7 +45,7 @@ export function Terms() {
           sections.map((s, i) => (
             <Reveal key={s.id}>
               <section className="grid grid-cols-12 gap-4 py-7 border-b border-line first:border-t first:border-ink">
-                <p className="col-span-2 sm:col-span-1 font-display text-[26px] leading-none text-accent" aria-hidden>
+                <p className={`col-span-2 sm:col-span-1 font-note text-[34px] leading-none text-accent ${i % 2 ? 'rotate-2' : '-rotate-2'}`} aria-hidden>
                   {String(i + 1).padStart(2, '0')}
                 </p>
                 <div className="col-span-10 sm:col-span-11">

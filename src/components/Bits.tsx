@@ -61,3 +61,38 @@ export function SectionHead({
     </div>
   )
 }
+
+/** Washi tape strip. Position it with extra classes (e.g. "-top-3 left-8 rotate-[-4deg]"). */
+export function Tape({
+  tone = 'paper',
+  className = '',
+}: {
+  tone?: 'accent' | 'moss' | 'paper'
+  className?: string
+}) {
+  const bg = tone === 'accent' ? 'tape-accent' : tone === 'moss' ? 'tape-moss' : 'tape-paper'
+  return <span aria-hidden className={`tape ${bg} ${className}`} />
+}
+
+/** Rubber-stamp mark, e.g. <Stamp>Open</Stamp>. Rotate slightly via className. */
+export function Stamp({
+  children,
+  tone = 'accent',
+  className = '',
+}: {
+  children: ReactNode
+  tone?: 'accent' | 'moss' | 'ink'
+  className?: string
+}) {
+  const color = tone === 'moss' ? 'text-moss' : tone === 'ink' ? 'text-ink' : 'text-accent'
+  return (
+    <span aria-hidden className={`stamp ${color} -rotate-3 ${className}`}>
+      {children}
+    </span>
+  )
+}
+
+/** Handwritten margin note. */
+export function Note({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return <p className={`font-note text-muted ${className}`}>{children}</p>
+}
