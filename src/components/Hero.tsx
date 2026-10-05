@@ -113,7 +113,7 @@ export function Hero({ settings, heroArt, config }: { settings: SiteSettings; he
           </div>
 
           {/* large artwork, taped into the page */}
-          <div className="lg:col-span-7 relative">
+          <div className="lg:col-span-7 relative sm:-rotate-1">
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -124,16 +124,15 @@ export function Hero({ settings, heroArt, config }: { settings: SiteSettings; he
               hi, i draw things ↙
             </motion.p>
             <motion.figure
-              initial={{ clipPath: 'inset(4% 3% 4% 3%)', opacity: 0, rotate: 0 }}
-              animate={{ clipPath: 'inset(0% 0% 0% 0%)', opacity: 1, rotate: -1 }}
+              initial={{ clipPath: 'inset(4% 3% 4% 3%)', opacity: 0 }}
+              animate={{ clipPath: 'inset(0% 0% 0% 0%)', opacity: 1 }}
               transition={{ duration: 0.9, delay: 0.3, ease: easeSoft as unknown as [number, number, number, number] }}
               className="relative"
             >
               {/* backing sheet peeking out behind */}
               <div aria-hidden className="absolute inset-0 translate-x-3 translate-y-3 rotate-[1.5deg] bg-parchment border border-line" />
-              <div className="mat relative lift">
+              <div className="mat relative hard-shadow">
                 <Tape tone="accent" className="-top-3 left-10 -rotate-6" />
-                <Tape tone="moss" className="-bottom-3 right-10 rotate-[5deg]" />
                 {img ? (
                   <SmartImage
                     path={heroArt?.image_path ?? null}

@@ -72,8 +72,7 @@ export function Commissions() {
           <Note className="text-[20px] -rotate-1 mb-3">recent stuff, so you know my hand ↓</Note>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {artworks.slice(0, 4).map((a, i) => (
-              <figure key={a.id} className={`relative bg-cream border border-line p-1.5 ${i % 2 ? 'rotate-1' : '-rotate-1'}`}>
-                <Tape tone={i % 2 ? 'moss' : 'paper'} className="-top-2.5 left-1/2 -translate-x-1/2 !w-[64px] !h-[20px]" />
+              <figure key={a.id} className={`relative bg-cream border border-line p-1.5 hard-shadow ${i % 2 ? 'rotate-1' : '-rotate-1'}`}>
                 <SmartImage path={a.image_path} alt={a.title} width={500} sizes="(max-width: 640px) 50vw, 25vw" className="w-full aspect-square object-cover" />
               </figure>
             ))}

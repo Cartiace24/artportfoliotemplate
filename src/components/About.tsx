@@ -11,8 +11,8 @@ export function AboutPreview({ about }: { about: AboutContent }) {
   return (
     <div className="grid md:grid-cols-12 gap-8 md:gap-10 items-start">
       <Reveal className="md:col-span-4">
-        <figure className="relative -rotate-1">
-          <div className="mat lift">
+        <figure className="relative sm:-rotate-1">
+          <div className="mat hard-shadow">
             <Tape tone="paper" className="-top-3 left-1/2 -translate-x-1/2 rotate-2" />
             {img ? (
               <SmartImage
@@ -87,8 +87,8 @@ export function SocialLinks({ socials }: { socials: SocialLink[] }) {
     >
       <Note className="text-[21px] text-center -rotate-1 mb-2">find me here — say hi!</Note>
       <ul className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
-        {live.map((s, i) => (
-          <li key={s.id} className={i % 2 ? 'rotate-1' : '-rotate-1'}>
+        {live.map((s) => (
+          <li key={s.id}>
             <a
               href={s.url}
               target="_blank"

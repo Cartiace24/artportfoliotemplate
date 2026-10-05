@@ -3,25 +3,39 @@ import { ArrowLeft, ArrowRight, X } from 'lucide-react'
 import { useCallback, useEffect, useRef } from 'react'
 import type { Artwork } from '../lib/types'
 import { SmartImage } from './SmartImage'
-import { Tape } from './Bits'
 
 interface WallSlot {
   span: string
   aspect: string
   rotate: string
   mat: boolean
-  tape: 'accent' | 'moss' | 'paper' | null
   offset: string
 }
 
-const WALL: WallSlot[] = [
-  { span: 'md:col-span-12', aspect: 'aspect-[4/3] md:aspect-[21/9]', rotate: '', mat: false, tape: null, offset: '' },
-  { span: 'md:col-span-7', aspect: 'aspect-[4/3]', rotate: 'md:-rotate-1', mat: true, tape: 'accent', offset: '' },
-  { span: 'md:col-span-5', aspect: 'aspect-[4/3] md:aspect-[3/4]', rotate: 'md:rotate-1', mat: true, tape: 'moss', offset: 'md:mt-14' },
-  { span: 'md:col-span-5', aspect: 'aspect-[4/3]', rotate: 'md:-rotate-[0.5deg]', mat: false, tape: null, offset: '' },
-  { span: 'md:col-span-7', aspect: 'aspect-[4/3] md:aspect-[16/10]', rotate: 'md:rotate-[0.5deg]', mat: true, tape: 'paper', offset: 'md:-mt-6' },
-  { span: 'md:col-span-12', aspect: 'aspect-[4/3] md:aspect-[21/9]', rotate: '', mat: false, tape: null, offset: '' },
+// Two alternating patterns so large galleries never visibly repeat.
+const WALL_A: WallSlot[] = [
+  { span: 'md:col-span-12', aspect: 'aspect-[4/3] md:aspect-[21/9]', rotate: '', mat: false, offset: '' },
+  { span: 'md:col-span-7', aspect: 'aspect-[4/3]', rotate: 'md:-rotate-1', mat: true, offset: '' },
+  { span: 'md:col-span-5', aspect: 'aspect-[4/3] md:aspect-[3/4]', rotate: 'md:rotate-1', mat: true, offset: 'md:mt-14' },
+  { span: 'md:col-span-5', aspect: 'aspect-[4/3]', rotate: 'md:-rotate-[0.5deg]', mat: false, offset: '' },
+  { span: 'md:col-span-7', aspect: 'aspect-[4/3] md:aspect-[16/10]', rotate: 'md:rotate-[0.5deg]', mat: true, offset: 'md:-mt-6' },
+  { span: 'md:col-span-12', aspect: 'aspect-[4/3] md:aspect-[21/9]', rotate: '', mat: false, offset: '' },
 ]
+
+const WALL_B: WallSlot[] = [
+  { span: 'md:col-span-12', aspect: 'aspect-[4/3] md:aspect-[16/10]', rotate: '', mat: false, offset: '' },
+  { span: 'md:col-span-5', aspect: 'aspect-[4/3] md:aspect-[3/4]', rotate: 'md:rotate-1', mat: true, offset: '' },
+  { span: 'md:col-span-7', aspect: 'aspect-[4/3]', rotate: 'md:-rotate-1', mat: true, offset: 'md:mt-10' },
+  { span: 'md:col-span-7', aspect: 'aspect-[4/3] md:aspect-[16/10]', rotate: 'md:rotate-[0.5deg]', mat: false, offset: '' },
+  { span: 'md:col-span-5', aspect: 'aspect-[4/3]', rotate: 'md:-rotate-[0.5deg]', mat: true, offset: '' },
+  { span: 'md:col-span-6 md:col-start-4', aspect: 'aspect-[16/10]', rotate: 'md:rotate-1', mat: true, offset: 'md:mt-6' },
+]
+
+function slotFor(i: number): WallSlot {
+  const loop = Math.floor(i / 6) % 2
+  const pattern = loop === 0 ? WALL_A : WALL_B
+  return pattern[i % 6]!
+}
 
 export function ArtworkCard({
   art,
@@ -49,8 +63,7 @@ export function ArtworkCard({
         aria-label={`Open ${art.title} (${art.category}) — view larger`}
         aria-haspopup="dialog"
       >
-        <span className={`relative block ${slot.mat ? 'mat lift' : 'frame'} overflow-hidden bg-parchment`}>
-          {slot.tape && <Tape tone={slot.tape} className="-top-3 left-1/2 -translate-x-1/2 -rotate-3 !w-[80px]" />}
+        <span className={`relative block ${slot.mat ? 'mat' : 'frame'} ${slot.rotate ? 'hard-shadow' : ''} overflow-hidden bg-parchment`}>
           <SmartImage
             path={art.image_path}
             alt={`${art.title} — ${art.category}`}
@@ -78,8 +91,8 @@ export function ArtworkCard({
 export function FeaturedGallery({ artworks, onOpen }: { artworks: Artwork[]; onOpen: (a: Artwork) => void }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-12 md:gap-y-8">
-      {artworks.slice(0, 6).map((a, i) => (
-        <ArtworkCard key={a.id} art={a} onOpen={onOpen} index={i} slot={WALL[i % WALL.length]!} />
+      {artworks.slice(0, 12).map((a, i) => (
+        <ArtworkCard key={a.id} art={a} onOpen={onOpen} index={i} slot={slotFor(i)} />
       ))}
     </div>
   )
