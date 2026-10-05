@@ -14,6 +14,7 @@ In Supabase **SQL Editor**, run these in order (each is safe to re-run):
 1. `supabase/migrations/001_schema.sql` — tables, RLS, storage bucket, seed content
 2. `supabase/migrations/002_hardening.sql` — least-privilege grants, storage lockdown, reorder + social-delete RPCs
 3. `supabase/migrations/003_cms_extras.sql` — terms, site config, request inbox
+4. `supabase/migrations/004_theme.sql` — public theme selection (Classic/Painterly), picked in Studio → Site → Design
 
 ## 3. Management link
 

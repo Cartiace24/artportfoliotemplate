@@ -2,13 +2,16 @@ import { Suspense, lazy } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { Loader2 } from 'lucide-react'
-import { Header } from './components/Header'
-import { Footer } from './components/About'
+import { Header as ClassicHeader } from './themes/classic/Header'
+import { Footer as ClassicFooter } from './themes/classic/About'
+import { PHeader } from './themes/painterly/Header'
+import { PFooter } from './themes/painterly/About'
 import { Home } from './pages/Home'
 import { Commissions } from './pages/Commissions'
 import { About } from './pages/About'
 import { Terms } from './pages/Terms'
 import { useSiteConfig, useSiteSettings, useSocials } from './hooks/useSiteContent'
+import { resolveTheme } from './lib/theme'
 
 // The studio is code-split: public visitors never download the
 // management UI (~40% of the bundle).
@@ -26,14 +29,23 @@ function PublicShell({ children }: { children: React.ReactNode }) {
   const { settings } = useSiteSettings()
   const { socials } = useSocials()
   const { config } = useSiteConfig()
+  const painterly = resolveTheme(config.theme) === 'painterly'
   return (
-    <div className="paper-grain min-h-dvh flex flex-col">
+    <div className={`paper-grain min-h-dvh flex flex-col ${painterly ? 'theme-painterly' : ''}`}>
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-ink focus:text-cream focus:px-4 focus:py-2">
         Skip to content
       </a>
-      <Header settings={settings} siteName={config.site_name} />
+      {painterly ? (
+        <PHeader settings={settings} siteName={config.site_name} />
+      ) : (
+        <ClassicHeader settings={settings} siteName={config.site_name} />
+      )}
       <div className="flex-1">{children}</div>
-      <Footer socials={socials} siteName={config.site_name} tagline={config.tagline} />
+      {painterly ? (
+        <PFooter socials={socials} siteName={config.site_name} tagline={config.tagline} />
+      ) : (
+        <ClassicFooter socials={socials} siteName={config.site_name} tagline={config.tagline} />
+      )}
     </div>
   )
 }

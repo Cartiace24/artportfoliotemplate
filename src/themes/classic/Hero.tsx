@@ -1,9 +1,9 @@
 import { motion } from 'motion/react'
-import type { Artwork, SiteConfig, SiteSettings } from '../lib/types'
-import { publicArtUrl } from '../lib/supabase'
-import { SmartImage } from './SmartImage'
+import type { Artwork, SiteConfig, SiteSettings } from '../../lib/types'
+import { publicArtUrl } from '../../lib/supabase'
+import { SmartImage } from '../../components/SmartImage'
 import { Stamp, Tape } from './Bits'
-import { easeSoft } from '../animations/variants'
+import { easeSoft } from '../../animations/variants'
 
 export function CommissionBadge({ settings }: { settings: SiteSettings }) {
   const open = settings.commission_status === 'open'

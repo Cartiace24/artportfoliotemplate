@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { CONFIG_ERROR_MESSAGE } from '../lib/env'
+import { CONFIG_ERROR_MESSAGE } from '../../lib/env'
 
 export function ConfigError({ compact = false }: { compact?: boolean }) {
   return (

@@ -9,6 +9,7 @@ import { getSupabase, publicArtUrl } from '../lib/supabase'
 import { isDemoAllowed, isSupabaseConfigured } from '../lib/env'
 import { callManageRpc, tokenHash, uploadArtworkFile, validateImageFile, validateManageToken } from '../lib/manageApi'
 import { generateManageToken, sha256Hex } from '../lib/tokens'
+import { THEMES } from '../lib/theme'
 import { PageMeta } from '../lib/meta'
 import {
   PLACEHOLDER_ABOUT, PLACEHOLDER_ARTWORKS, PLACEHOLDER_CONFIG, PLACEHOLDER_PRICES, PLACEHOLDER_SETTINGS, PLACEHOLDER_SOCIALS, PLACEHOLDER_TERMS,
@@ -1328,7 +1329,7 @@ function SiteTab({ data, say, token }: { data: Data; say: (m: string) => void; t
     const h = await tokenHash(token)
     const r = await callManageRpc({
       fn: 'manage_update_config',
-      args: { p_token_hash: h, p_site_name: draft.site_name.trim(), p_tagline: draft.tagline.trim(), p_hero_title: draft.hero_title.trim() },
+      args: { p_token_hash: h, p_site_name: draft.site_name.trim(), p_tagline: draft.tagline.trim(), p_hero_title: draft.hero_title.trim(), p_theme: draft.theme },
     })
     if (!r.ok) {
       say("Couldn't save — " + (r.error ?? 'please try again.'))
@@ -1353,6 +1354,30 @@ function SiteTab({ data, say, token }: { data: Data; say: (m: string) => void; t
       <Field label="Hero headline">
         <input className={inputCls} value={draft.hero_title} onChange={(e) => setDraft({ ...draft, hero_title: e.target.value })} placeholder="It’s Lorem!" maxLength={80} />
       </Field>
+      <fieldset>
+        <legend className="text-[12px] font-bold uppercase tracking-[0.12em] text-[#6F675B]">Design — public portfolio theme</legend>
+        <div className="mt-1.5 grid sm:grid-cols-2 gap-2.5" role="radiogroup" aria-label="Portfolio theme">
+          {THEMES.map((t) => {
+            const active = draft.theme === t.id
+            return (
+              <button
+                key={t.id}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => setDraft({ ...draft, theme: t.id })}
+                className={`rounded-xl border-2 px-4 py-3.5 text-left transition-colors min-h-[48px] ${
+                  active ? 'border-[#1E1C18] bg-[#1E1C18] text-white' : 'border-[#DCD4C2] bg-white text-[#1E1C18] hover:border-[#1E1C18]'
+                }`}
+              >
+                <span className="block font-bold text-[14.5px]">○ {t.label}</span>
+                <span className={`block text-[12.5px] mt-0.5 ${active ? 'text-white/70' : 'text-[#6F675B]'}`}>{t.blurb}</span>
+              </button>
+            )
+          })}
+        </div>
+        <p className="mt-1.5 text-[12.5px] text-[#6F675B]">Switches the whole public site instantly — same artwork, words, and prices.</p>
+      </fieldset>
       <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#1E1C18] text-white px-7 py-3 font-bold disabled:opacity-60 min-h-[48px]">
         {saving ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Check className="w-4 h-4" aria-hidden />} Save site settings
       </button>

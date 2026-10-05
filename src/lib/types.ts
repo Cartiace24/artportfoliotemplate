@@ -1,3 +1,5 @@
+import type { ThemeName } from './theme'
+
 export type CommissionStatus = 'open' | 'closed'
 
 export interface SiteSettings {
@@ -66,6 +68,7 @@ export interface SiteConfig {
   site_name: string
   tagline: string
   hero_title: string
+  theme: ThemeName
 }
 
 export interface CommissionRequest {
@@ -285,6 +288,7 @@ export const PLACEHOLDER_CONFIG: SiteConfig = {
   site_name: 'Lorem Ipsum',
   tagline: 'Lorem ipsum dolor sit amet',
   hero_title: 'It’s Lorem!',
+  theme: 'classic',
 }
 
 export const PLACEHOLDER_TERMS: TermsSection[] = [

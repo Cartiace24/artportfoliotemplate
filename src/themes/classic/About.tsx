@@ -1,9 +1,9 @@
 import { motion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
-import type { AboutContent, SocialLink } from '../lib/types'
-import { publicArtUrl } from '../lib/supabase'
-import { SmartImage } from './SmartImage'
+import type { AboutContent, SocialLink } from '../../lib/types'
+import { publicArtUrl } from '../../lib/supabase'
+import { SmartImage } from '../../components/SmartImage'
 import { Eyebrow, Note, Reveal, Tape } from './Bits'
 
 export function AboutPreview({ about }: { about: AboutContent }) {

@@ -1,8 +1,8 @@
 import { motion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
-import type { Artwork, CommissionCategory, CommissionPrice, SiteSettings } from '../lib/types'
-import { SmartImage } from './SmartImage'
+import type { Artwork, CommissionCategory, CommissionPrice, SiteSettings } from '../../lib/types'
+import { SmartImage } from '../../components/SmartImage'
 import { Eyebrow, Reveal, Stamp, Tape } from './Bits'
 
 export function CommissionPreview({
