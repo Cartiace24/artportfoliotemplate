@@ -12,11 +12,23 @@ const LINKS = [
   { to: '/commissions#request', label: 'Contact', anchor: true },
 ] as const
 
-export function PHeader({ settings, siteName }: { settings: SiteSettings; siteName: string }) {
+export function PHeader({
+  settings,
+  siteName,
+  startDark = false,
+}: {
+  settings: SiteSettings
+  siteName: string
+  startDark?: boolean
+}) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const loc = useLocation()
   const isOpen = settings.commission_status === 'open'
+  // Over the dark painted hero the header floats in cream; everywhere
+  // else it sits on paper. Once scrolled it always gains a paper backdrop.
+  const overDark = startDark && !scrolled
+  const fg = overDark ? 'text-[var(--pt-cream)]' : 'text-[var(--pt-ink)]'
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16)
@@ -58,7 +70,7 @@ export function PHeader({ settings, siteName }: { settings: SiteSettings; siteNa
             scrolled ? 'h-[58px]' : 'h-[72px]'
           }`}
         >
-          <Link to="/" className="pt-hand font-bold text-[32px] leading-none text-[var(--pt-ink)] -rotate-2" aria-label={`${siteName} home`}>
+          <Link to="/" className={`pt-hand font-bold text-[32px] leading-none -rotate-2 transition-colors ${fg}`} aria-label={`${siteName} home`}>
             {siteName}
           </Link>
 
@@ -68,7 +80,7 @@ export function PHeader({ settings, siteName }: { settings: SiteSettings; siteNa
                 <a
                   key={l.label}
                   href={l.to}
-                  className="pt-hand text-[22px] text-[var(--pt-ink)] hover:text-[var(--pt-ochre)] transition-colors pb-0.5 min-h-[44px] inline-flex items-center"
+                  className={`pt-hand text-[22px] transition-colors pb-0.5 min-h-[44px] inline-flex items-center hover:text-[var(--pt-ochre)] ${fg}`}
                 >
                   {l.label}
                 </a>
@@ -79,7 +91,7 @@ export function PHeader({ settings, siteName }: { settings: SiteSettings; siteNa
                   end={'end' in l && !!l.end}
                   className={({ isActive }) =>
                     `pt-hand text-[22px] transition-colors pb-0.5 min-h-[44px] inline-flex items-center ${
-                      isActive ? 'text-[var(--pt-ochre)]' : 'text-[var(--pt-ink)] hover:text-[var(--pt-ochre)]'
+                      isActive ? 'text-[var(--pt-sun)] underline decoration-[var(--pt-sun)] decoration-2 underline-offset-8' : `${fg} hover:text-[var(--pt-ochre)]`
                     }`
                   }
                 >
@@ -98,7 +110,7 @@ export function PHeader({ settings, siteName }: { settings: SiteSettings; siteNa
               {isOpen ? 'Open' : 'Closed'}
             </Link>
             <button
-              className="md:hidden inline-flex items-center justify-center w-11 h-11 text-[var(--pt-ink)]"
+              className={`md:hidden inline-flex items-center justify-center w-11 h-11 transition-colors ${fg}`}
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-controls="painterly-mobile-nav"
@@ -117,7 +129,7 @@ export function PHeader({ settings, siteName }: { settings: SiteSettings; siteNa
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 md:hidden bg-[var(--pt-paper)]"
+            className="fixed inset-0 z-40 md:hidden pt-night"
           >
             <motion.nav
               id="painterly-mobile-nav"
@@ -125,10 +137,10 @@ export function PHeader({ settings, siteName }: { settings: SiteSettings; siteNa
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 12 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="h-full flex flex-col justify-center px-8 pt-16"
+              className="relative z-[1] h-full flex flex-col justify-center px-8 pt-16"
               aria-label="Mobile"
             >
-              <p className="pt-hand text-[26px] text-[var(--pt-ochre)] mb-4 -rotate-1">where to, friend?</p>
+              <p className="pt-hand text-[26px] text-[var(--pt-sun)] mb-4 -rotate-1">where to, friend?</p>
               <div className="grid gap-1">
                 {[
                   ['/', 'Home'],
@@ -144,11 +156,11 @@ export function PHeader({ settings, siteName }: { settings: SiteSettings; siteNa
                   >
                     <Link
                       to={to}
-                      className={`flex items-baseline gap-4 py-3 border-b-2 border-[var(--pt-ink)]/20 pt-display text-[38px] leading-none ${
-                        loc.pathname === to ? 'text-[var(--pt-ochre)]' : 'text-[var(--pt-ink)]'
+                      className={`flex items-baseline gap-4 py-3 border-b border-[var(--pt-cream)]/25 pt-display text-[38px] leading-none ${
+                        loc.pathname === to ? 'text-[var(--pt-sun)]' : 'text-[var(--pt-cream)]'
                       }`}
                     >
-                      <span className="font-mono text-[12px] text-[var(--pt-brown)]">0{i + 1}</span>
+                      <span className="font-mono text-[12px] text-[var(--pt-cream)]/60">0{i + 1}</span>
                       {label}
                     </Link>
                   </motion.div>
@@ -156,9 +168,9 @@ export function PHeader({ settings, siteName }: { settings: SiteSettings; siteNa
               </div>
               <Link
                 to="/commissions"
-                className="mt-8 inline-flex items-center gap-2 border-2 border-[var(--pt-ink)] bg-[var(--pt-sun)] text-[var(--pt-ink)] px-5 py-3 font-mono text-[12px] tracking-[0.12em] uppercase w-fit"
+                className="mt-8 inline-flex items-center gap-2 border-2 border-[var(--pt-cream)]/60 text-[var(--pt-cream)] px-5 py-3 font-mono text-[12px] tracking-[0.12em] uppercase w-fit"
               >
-                <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-[var(--pt-olive)]' : 'bg-[var(--pt-ink)]'}`} aria-hidden />
+                <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-[var(--pt-sun)]' : 'bg-[var(--pt-ochre)]'}`} aria-hidden />
                 {isOpen ? 'Commissions open' : 'Commissions closed'}
               </Link>
             </motion.nav>

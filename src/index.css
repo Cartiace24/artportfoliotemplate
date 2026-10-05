@@ -218,3 +218,101 @@ body {
   background-size: 100% 8px;
   padding-bottom: 8px;
 }
+
+/* deep midnight-blue painted night sky (hero + studio bands) */
+.pt-night {
+  --pt-night-deep: #10173a;
+  --pt-night-mid: #1b2653;
+  --pt-night-soft: #2a3870;
+  background:
+    radial-gradient(ellipse 34% 26% at 79% 10%, rgba(232, 169, 28, 0.38), transparent 70%),
+    radial-gradient(ellipse 45% 32% at 10% 82%, rgba(47, 111, 107, 0.4), transparent 70%),
+    radial-gradient(ellipse 60% 42% at 88% 88%, rgba(38, 60, 140, 0.55), transparent 70%),
+    radial-gradient(ellipse 65% 50% at 28% 18%, rgba(72, 92, 170, 0.5), transparent 72%),
+    radial-gradient(ellipse 40% 30% at 60% 65%, rgba(30, 42, 100, 0.6), transparent 70%),
+    linear-gradient(180deg, #10173a 0%, #1b2653 55%, #232f66 100%);
+  position: relative;
+  isolation: isolate;
+}
+
+/* starfield + paint grain over night bands */
+.pt-night::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='%23ffffff'%3E%3Ccircle cx='12' cy='22' r='1.1' opacity='.8'/%3E%3Ccircle cx='52' cy='10' r='.8' opacity='.6'/%3E%3Ccircle cx='96' cy='30' r='1.2' opacity='.85'/%3E%3Ccircle cx='128' cy='66' r='.9' opacity='.6'/%3E%3Ccircle cx='34' cy='64' r='.7' opacity='.55'/%3E%3Ccircle cx='70' cy='52' r='1' opacity='.7'/%3E%3Ccircle cx='112' cy='104' r='.8' opacity='.6'/%3E%3Ccircle cx='22' cy='112' r='1' opacity='.7'/%3E%3Ccircle cx='62' cy='94' r='.7' opacity='.5'/%3E%3Ccircle cx='88' cy='126' r='1.1' opacity='.75'/%3E%3Ccircle cx='126' cy='14' r='.7' opacity='.55'/%3E%3Ccircle cx='44' cy='132' r='.8' opacity='.6'/%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.55;
+}
+
+/* swirling paint strokes over night bands */
+.pt-night::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 46% 20% at 72% 30%, transparent 62%, rgba(120, 150, 220, 0.14) 78%, transparent 92%),
+    radial-gradient(ellipse 38% 18% at 30% 70%, transparent 60%, rgba(232, 169, 28, 0.1) 78%, transparent 92%),
+    radial-gradient(ellipse 30% 16% at 82% 62%, transparent 58%, rgba(47, 111, 107, 0.22) 80%, transparent 94%);
+}
+
+/* flatter deep-blue band for studio sections */
+.pt-night-soft {
+  background:
+    radial-gradient(ellipse 50% 36% at 85% 15%, rgba(72, 92, 170, 0.35), transparent 70%),
+    radial-gradient(ellipse 45% 35% at 8% 90%, rgba(47, 111, 107, 0.3), transparent 70%),
+    linear-gradient(180deg, #151d42 0%, #1b2653 100%);
+  position: relative;
+  isolation: isolate;
+}
+
+.pt-night-soft::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* cream gallery band with torn top + bottom edges (overlaps dark bands) */
+.pt-cream-band {
+  background-color: var(--pt-paper);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  clip-path: polygon(0 14px, 2% 7px, 5% 13px, 9% 6px, 13% 12px, 18% 7px, 23% 14px, 28% 6px, 33% 12px, 38% 7px, 44% 13px, 50% 6px, 56% 12px, 61% 7px, 67% 13px, 72% 6px, 78% 12px, 83% 7px, 88% 13px, 93% 6px, 97% 12px, 100% 7px, 100% calc(100% - 14px), 98% calc(100% - 7px), 94% calc(100% - 13px), 89% calc(100% - 6px), 84% calc(100% - 12px), 79% calc(100% - 7px), 73% calc(100% - 13px), 68% calc(100% - 6px), 62% calc(100% - 12px), 57% calc(100% - 7px), 51% calc(100% - 13px), 46% calc(100% - 6px), 40% calc(100% - 12px), 35% calc(100% - 7px), 29% calc(100% - 13px), 24% calc(100% - 6px), 19% calc(100% - 12px), 14% calc(100% - 7px), 9% calc(100% - 13px), 4% calc(100% - 6px), 0 calc(100% - 12px));
+  padding-top: 44px;
+  padding-bottom: 44px;
+}
+
+/* sunflower-yellow brush-stroke button */
+.pt-brushbtn {
+  background-color: var(--pt-sun);
+  color: #232f66;
+  clip-path: polygon(1% 12%, 99% 0, 100% 88%, 0 100%);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.pt-brushbtn:hover {
+  background-color: var(--pt-ochre);
+  color: #fff;
+}
+
+/* torn paper sheet (commission sheet, notes) */
+.pt-sheet {
+  background-color: var(--pt-cream);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  clip-path: polygon(1% 8px, 4% 2px, 9% 7px, 15% 2px, 22% 8px, 30% 3px, 38% 7px, 47% 2px, 55% 8px, 63% 3px, 71% 7px, 79% 2px, 86% 8px, 93% 3px, 99% 7px, 100% 30%, 99% 60%, 100% 85%, 98% 97%, 93% calc(100% - 3px), 86% calc(100% - 8px), 78% calc(100% - 2px), 70% calc(100% - 7px), 61% calc(100% - 3px), 52% calc(100% - 8px), 43% calc(100% - 2px), 34% calc(100% - 7px), 26% calc(100% - 3px), 18% calc(100% - 8px), 10% calc(100% - 2px), 3% calc(100% - 7px), 0 92%, 1% 65%, 0 35%);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.55);
+}
+
+/* brush-stroke underline for links */
+.pt-brushlink {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='8' viewBox='0 0 60 8'%3E%3Cpath d='M1 5 Q 15 2, 30 4.5 T 59 3.5' fill='none' stroke='%23C07A24' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 8px;
+  padding-bottom: 8px;
+}

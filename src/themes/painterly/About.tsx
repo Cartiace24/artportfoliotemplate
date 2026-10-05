@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom'
 import type { AboutContent, SocialLink } from '../../lib/types'
 import { publicArtUrl } from '../../lib/supabase'
 import { SmartImage } from '../../components/SmartImage'
-import { PNote, PReveal, PTape, PaintDabs, SquiggleArrow } from './bits'
+import { PNote, PReveal, PTape, PaintDabs } from './bits'
 
-export function PAboutPreview({ about }: { about: AboutContent }) {
+export function PAboutPreview({ about, onDark = false }: { about: AboutContent; onDark?: boolean }) {
   const img = publicArtUrl(about.profile_image_path)
+  const t = onDark ? 'text-[var(--pt-cream)]' : 'text-[var(--pt-ink)]'
+  const sub = onDark ? 'text-[var(--pt-cream)]/85' : 'text-[var(--pt-ink)]'
   return (
     <div className="grid md:grid-cols-12 gap-8 md:gap-10 items-start">
       <PReveal className="md:col-span-4">
@@ -36,27 +38,27 @@ export function PAboutPreview({ about }: { about: AboutContent }) {
       <div className="md:col-span-8">
         <PReveal>
           <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-[var(--pt-brown)]">Sketchbook entry no. 1</p>
-          <p className="mt-3 pt-display text-[24px] md:text-[28px] leading-[1.4] text-[var(--pt-ink)] max-w-[40ch]">
+          <p className={`mt-3 pt-display text-[24px] md:text-[28px] leading-[1.4] max-w-[40ch] ${t}`}>
             {about.bio}
           </p>
         </PReveal>
         <PReveal delay={1}>
           <div className="mt-8 grid sm:grid-cols-2 gap-x-8">
-            <div className="border-t-[3px] border-[var(--pt-ink)] py-4">
-              <p className="pt-hand text-[24px] text-[var(--pt-ochre)]">i paint…</p>
-              <p className="mt-1 text-[14.5px] leading-relaxed text-[var(--pt-ink)]">
+            <div className={`border-t-[3px] py-4 ${onDark ? 'border-[var(--pt-ochre)]' : 'border-[var(--pt-ink)]'}`}>
+              <p className={`pt-hand text-[24px] ${onDark ? 'text-[var(--pt-sun)]' : 'text-[var(--pt-ochre)]'}`}>i paint…</p>
+              <p className={`mt-1 text-[14.5px] leading-relaxed ${sub}`}>
                 {about.subjects.length ? about.subjects.join(' · ') : '—'}
               </p>
             </div>
-            <div className="border-t-[3px] border-[var(--pt-ink)] py-4">
-              <p className="pt-hand text-[24px] text-[var(--pt-ochre)]">currently into…</p>
-              <p className="mt-1 text-[14.5px] leading-relaxed text-[var(--pt-ink)]">
+            <div className={`border-t-[3px] py-4 ${onDark ? 'border-[var(--pt-ochre)]' : 'border-[var(--pt-ink)]'}`}>
+              <p className={`pt-hand text-[24px] ${onDark ? 'text-[var(--pt-sun)]' : 'text-[var(--pt-ochre)]'}`}>currently into…</p>
+              <p className={`mt-1 text-[14.5px] leading-relaxed ${sub}`}>
                 {about.interests.length ? about.interests.join(' · ') : '—'}
               </p>
             </div>
           </div>
           {about.signature && (
-            <p className="mt-4 pt-hand text-[38px] text-[var(--pt-ink)] -rotate-2">{about.signature}</p>
+            <p className={`mt-4 pt-hand text-[38px] -rotate-2 ${onDark ? 'text-[var(--pt-sun)]' : 'text-[var(--pt-ink)]'}`}>{about.signature}</p>
           )}
           <Link
             to="/about"
@@ -70,8 +72,9 @@ export function PAboutPreview({ about }: { about: AboutContent }) {
   )
 }
 
-export function PSocialLinks({ socials }: { socials: SocialLink[] }) {
+export function PSocialLinks({ socials, onDark = false }: { socials: SocialLink[]; onDark?: boolean }) {
   const live = socials.filter((s) => s.enabled && s.url && s.url !== '#')
+  const name = onDark ? 'text-[var(--pt-cream)]' : 'text-[var(--pt-ink)]'
   if (!live.length) {
     return (
       <PNote className="text-[24px] text-center">no addresses yet — check back soon!</PNote>
@@ -96,7 +99,7 @@ export function PSocialLinks({ socials }: { socials: SocialLink[] }) {
               title={s.display_name || s.platform}
               className="group inline-flex items-baseline gap-1.5 py-2 min-h-[44px]"
             >
-              <span className="pt-hand font-bold text-[30px] leading-none text-[var(--pt-ink)] group-hover:text-[var(--pt-ochre)] transition-colors">
+              <span className={`pt-hand font-bold text-[30px] leading-none transition-colors group-hover:text-[var(--pt-ochre)] ${name}`}>
                 {s.platform}
               </span>
               <span aria-hidden className="font-mono text-[12px] text-[var(--pt-ochre)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
@@ -109,17 +112,19 @@ export function PSocialLinks({ socials }: { socials: SocialLink[] }) {
 }
 
 export function PFooter({ socials, siteName, tagline }: { socials: SocialLink[]; siteName: string; tagline: string }) {
+  void tagline
   const live = socials.filter((s) => s.enabled && s.url && s.url !== '#').slice(0, 6)
   return (
-    <footer className="mt-20 border-t-[3px] border-[var(--pt-ink)] pt-canvas">
-      <div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-12 pt-torn-top">
-        <div className="grid gap-10 md:grid-cols-12">
-          <div className="md:col-span-5">
-            <p className="pt-hand font-bold text-[40px] leading-none text-[var(--pt-ink)] -rotate-1">{siteName}</p>
-            <PNote className="text-[22px] mt-2 max-w-[30ch]">{tagline} — thanks for flipping through!</PNote>
-            <PaintDabs className="mt-4" />
+    <footer className="bg-[#10173a] text-[var(--pt-cream)]">
+      <div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="flex items-baseline gap-4">
+            <p className="pt-hand text-[28px] leading-none -rotate-1">{siteName}</p>
+            <p className="font-mono text-[11px] tracking-[0.1em] uppercase opacity-60">
+              © {new Date().getFullYear()} All rights reserved.
+            </p>
           </div>
-          <nav className="md:col-span-3 flex flex-col gap-1" aria-label="Footer">
+          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Footer">
             {[
               ['/', 'Home'],
               ['/#work', 'Gallery'],
@@ -127,47 +132,65 @@ export function PFooter({ socials, siteName, tagline }: { socials: SocialLink[];
               ['/about', 'About'],
             ].map(([to, label]) =>
               to.startsWith('/#') ? (
-                <a key={to} href={to} className="py-1.5 pt-hand text-[24px] text-[var(--pt-ink)] hover:text-[var(--pt-ochre)] transition-colors w-fit min-h-[36px]">
+                <a key={to} href={to} className="pt-hand text-[22px] opacity-80 hover:opacity-100 hover:text-[var(--pt-sun)] transition min-h-[44px] inline-flex items-center">
                   {label}
                 </a>
               ) : (
-                <Link key={to} to={to} className="py-1.5 pt-hand text-[24px] text-[var(--pt-ink)] hover:text-[var(--pt-ochre)] transition-colors w-fit min-h-[36px]">
+                <Link key={to} to={to} className="pt-hand text-[22px] opacity-80 hover:opacity-100 hover:text-[var(--pt-sun)] transition min-h-[44px] inline-flex items-center">
                   {label}
                 </Link>
               )
             )}
           </nav>
-          <div className="md:col-span-4">
-            <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--pt-brown)] mb-2">Find me</p>
-            {live.length ? (
-              <ul className="flex flex-wrap gap-x-5 gap-y-1">
-                {live.map((s) => (
-                  <li key={s.id}>
-                    <a
-                      href={s.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label={s.platform}
-                      className="inline-flex items-center gap-1 py-1.5 pt-hand text-[24px] text-[var(--pt-ink)] hover:text-[var(--pt-ochre)] transition-colors min-h-[36px]"
-                    >
-                      {s.platform} <span aria-hidden className="font-mono text-[12px]">↗</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <PNote className="text-[22px]">no addresses yet…</PNote>
-            )}
-            <SquiggleArrow flip className="w-16 h-8 text-[var(--pt-teal)] mt-3 -rotate-6" />
-          </div>
+          {live.length > 0 && (
+            <div className="flex items-center gap-4">
+              {live.slice(0, 3).map((s) => (
+                <a
+                  key={s.id}
+                  href={s.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={s.platform}
+                  className="inline-flex items-center justify-center w-11 h-11 opacity-80 hover:opacity-100 hover:text-[var(--pt-sun)] transition min-h-[44px]"
+                >
+                  <SocialGlyph platform={s.platform} />
+                </a>
+              ))}
+            </div>
+          )}
         </div>
-        <div className="mt-10 pt-5 border-t-2 border-dashed border-[var(--pt-ink)]/30 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="font-mono text-[11px] tracking-[0.1em] uppercase text-[var(--pt-brown)]">
-            © {new Date().getFullYear()} {siteName}
-          </p>
-          <p className="pt-hand text-[22px] text-[var(--pt-brown)]">painted, not rendered ♡</p>
+        <div aria-hidden className="mt-6 flex items-center gap-2 opacity-50">
+          <PaintDabs />
         </div>
       </div>
     </footer>
+  )
+}
+
+export function SocialGlyph({ platform }: { platform: string }) {
+  const p = platform.toLowerCase()
+  const cls = 'w-5 h-5'
+  if (p.includes('instagram')) {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth={2} className={cls}>
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none" />
+      </svg>
+    )
+  }
+  if (p.includes('mail') || p.includes('email') || p.includes('contact')) {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth={2} className={cls}>
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="M3 7l9 6 9-6" />
+      </svg>
+    )
+  }
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className={cls}>
+      <path d="M4 4l7.5 16L14 13l7-2.5z" />
+      <path d="M14 13l6 6" />
+    </svg>
   )
 }
