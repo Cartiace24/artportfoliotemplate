@@ -29,14 +29,18 @@ function PublicShell({ children }: { children: React.ReactNode }) {
   const { settings } = useSiteSettings()
   const { socials } = useSocials()
   const { config } = useSiteConfig()
+  const loc = useLocation()
   const painterly = resolveTheme(config.theme) === 'painterly'
+  // The painterly home hero is a dark painted band, so the header must
+  // start in cream text there; everywhere else it starts in ink.
+  const startDark = painterly && loc.pathname === '/'
   return (
     <div className={`paper-grain min-h-dvh flex flex-col ${painterly ? 'theme-painterly' : ''}`}>
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-ink focus:text-cream focus:px-4 focus:py-2">
         Skip to content
       </a>
       {painterly ? (
-        <PHeader settings={settings} siteName={config.site_name} />
+        <PHeader settings={settings} siteName={config.site_name} startDark={startDark} />
       ) : (
         <ClassicHeader settings={settings} siteName={config.site_name} />
       )}

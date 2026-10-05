@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import type { AboutContent, SocialLink } from '../../lib/types'
 import { publicArtUrl } from '../../lib/supabase'
 import { SmartImage } from '../../components/SmartImage'
-import { PNote, PReveal, PTape, PaintDabs } from './bits'
+import { PReveal, PTape, PaintDabs } from './bits'
 
 export function PAboutPreview({ about, onDark = false }: { about: AboutContent; onDark?: boolean }) {
   const img = publicArtUrl(about.profile_image_path)
@@ -30,14 +30,14 @@ export function PAboutPreview({ about, onDark = false }: { about: AboutContent; 
             )}
           </div>
           <figcaption className="flex items-baseline justify-between gap-3 pt-2">
-            <span className="pt-hand text-[24px] text-[var(--pt-ink)]">thats me →</span>
+            <span className={`pt-hand text-[24px] ${onDark ? 'text-[var(--pt-cream)]' : 'text-[var(--pt-ink)]'}`}>thats me →</span>
             <PaintDabs />
           </figcaption>
         </figure>
       </PReveal>
       <div className="md:col-span-8">
         <PReveal>
-          <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-[var(--pt-brown)]">Sketchbook entry no. 1</p>
+          <p className={`font-mono text-[11px] tracking-[0.22em] uppercase ${onDark ? 'text-[var(--pt-cream)]/70' : 'text-[var(--pt-brown)]'}`}>Sketchbook entry no. 1</p>
           <p className={`mt-3 pt-display text-[24px] md:text-[28px] leading-[1.4] max-w-[40ch] ${t}`}>
             {about.bio}
           </p>
@@ -62,7 +62,7 @@ export function PAboutPreview({ about, onDark = false }: { about: AboutContent; 
           )}
           <Link
             to="/about"
-            className="pt-brushlink mt-3 inline-flex items-center gap-1.5 text-[15px] font-bold text-[var(--pt-ink)] hover:text-[var(--pt-ochre)] transition-colors min-h-[44px]"
+            className={`pt-brushlink mt-3 inline-flex items-center gap-1.5 text-[15px] font-bold transition-colors min-h-[44px] ${onDark ? 'text-[var(--pt-cream)] hover:text-[var(--pt-sun)]' : 'text-[var(--pt-ink)] hover:text-[var(--pt-ochre)]'}`}
           >
             Read the whole page →
           </Link>
@@ -77,7 +77,7 @@ export function PSocialLinks({ socials, onDark = false }: { socials: SocialLink[
   const name = onDark ? 'text-[var(--pt-cream)]' : 'text-[var(--pt-ink)]'
   if (!live.length) {
     return (
-      <PNote className="text-[24px] text-center">no addresses yet — check back soon!</PNote>
+      <p className={`pt-hand text-[24px] text-center ${onDark ? 'text-[var(--pt-cream)]/70' : 'text-[var(--pt-brown)]'}`}>no addresses yet — check back soon!</p>
     )
   }
   return (
@@ -87,7 +87,7 @@ export function PSocialLinks({ socials, onDark = false }: { socials: SocialLink[
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
     >
-      <PNote className="text-[26px] text-center -rotate-1 mb-3">my corners of the internet — come say hi!</PNote>
+      <p className={`pt-hand text-[26px] text-center -rotate-1 mb-3 ${onDark ? 'text-[var(--pt-sun)]' : 'text-[var(--pt-brown)]'}`}>my corners of the internet — come say hi!</p>
       <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
         {live.map((s, i) => (
           <li key={s.id} className={i % 2 ? 'rotate-1' : '-rotate-1'}>
@@ -102,7 +102,7 @@ export function PSocialLinks({ socials, onDark = false }: { socials: SocialLink[
               <span className={`pt-hand font-bold text-[30px] leading-none transition-colors group-hover:text-[var(--pt-ochre)] ${name}`}>
                 {s.platform}
               </span>
-              <span aria-hidden className="font-mono text-[12px] text-[var(--pt-ochre)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
+              <span aria-hidden className={`font-mono text-[12px] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform ${onDark ? 'text-[var(--pt-sun)]' : 'text-[var(--pt-ochre)]'}`}>↗</span>
             </a>
           </li>
         ))}

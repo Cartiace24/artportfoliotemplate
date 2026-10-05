@@ -137,15 +137,17 @@ export function PSectionHead({
   center?: boolean
 }) {
   const titleColor = onDark ? 'text-[var(--pt-cream)]' : 'text-[var(--pt-ink)]'
+  const kickerColor = onDark ? 'text-[var(--pt-sun)]' : 'text-[var(--pt-ochre)]'
+  const noteColor = onDark ? 'text-[var(--pt-cream)]/70' : 'text-[var(--pt-brown)]'
   return (
     <div className={`mb-8 ${center ? 'text-center' : ''}`}>
-      <p className={`pt-hand text-[24px] ${onDark ? 'text-[var(--pt-sun)]' : 'text-[var(--pt-ochre)]'} -rotate-1`}>{kicker}</p>
+      <p className={`pt-hand text-[24px] -rotate-1 ${kickerColor}`}>{kicker}</p>
       <div className={`flex items-baseline gap-4 mt-1 ${center ? 'justify-center' : ''}`}>
         <h2 className={`pt-display text-[34px] md:text-[44px] leading-none shrink-0 ${titleColor}`}>
           {title}
         </h2>
         {note && (
-          <span className="hidden md:block font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--pt-brown)] whitespace-nowrap ml-auto">
+          <span className={`hidden md:block font-mono text-[11px] tracking-[0.18em] uppercase whitespace-nowrap ml-auto ${noteColor}`}>
             {note}
           </span>
         )}
