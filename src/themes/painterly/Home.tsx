@@ -78,9 +78,9 @@ export function PainterlyHome() {
       {/* dark studio band: commissions sheet + about + connect */}
       <section aria-label="Studio desk" className="pt-night-soft">
         <div className="relative z-[1] mx-auto max-w-[1280px] px-4 sm:px-6 py-16 md:py-24">
-          <div className="grid lg:grid-cols-12 gap-10 items-start">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-start">
             {/* commission sheet */}
-            <div className="lg:col-span-5" id="commissions">
+            <div id="commissions">
               <PReveal>
                 <p className="pt-hand text-[26px] text-[var(--pt-sun)] -rotate-1 mb-4">pinned to the desk ↓</p>
                 {priceLoading ? (
@@ -96,60 +96,64 @@ export function PainterlyHome() {
                   <PCommissionPreview settings={settings} categories={categories} prices={prices} examples={artworks} />
                 )}
               </PReveal>
-              <PReveal delay={1} className="mt-10">
-                <p className="pt-hand text-[28px] text-[var(--pt-sun)] mb-5 -rotate-1">how it goes ↓</p>
-                <PCommissionProcess />
-              </PReveal>
             </div>
 
             {/* about panel */}
-            <div className="lg:col-span-4">
+            <div>
               <PSectionHead kicker="nice to meet you" title="About Me" onDark />
               <PAboutPreview about={about} onDark />
             </div>
+          </div>
 
-            {/* connect + quote notes */}
-            <div className="lg:col-span-3 flex flex-col gap-8 lg:pt-24">
-              <PReveal>
-                <TornNote className="rotate-2">
-                  <p className="pt-hand font-bold text-[30px] leading-none text-[var(--pt-ink)]">Let&rsquo;s Connect</p>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--pt-ink-soft)] italic">
-                    Follow my journey, support my work, or just say hi!
+          {/* process gets the full row so the steps never collide */}
+          <div className="mt-16">
+            <PReveal>
+              <p className="pt-hand text-[28px] text-[var(--pt-sun)] mb-5 -rotate-1">how it goes ↓</p>
+              <PCommissionProcess />
+            </PReveal>
+          </div>
+
+          {/* connect + quote notes side by side */}
+          <div className="mt-14 grid sm:grid-cols-2 gap-8 max-w-3xl">
+            <PReveal>
+              <TornNote className="rotate-2 h-full">
+                <p className="pt-hand font-bold text-[30px] leading-none text-[var(--pt-ink)]">Let&rsquo;s Connect</p>
+                <p className="mt-2 text-[13.5px] leading-relaxed text-[var(--pt-ink-soft)] italic">
+                  Follow my journey, support my work, or just say hi!
+                </p>
+                {liveSocials.length > 0 ? (
+                  <div className="mt-3 flex items-center gap-2">
+                    {liveSocials.slice(0, 4).map((s) => (
+                      <a
+                        key={s.id}
+                        href={s.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={s.platform}
+                        title={s.display_name || s.platform}
+                        className="inline-flex items-center justify-center w-11 h-11 border-2 border-[var(--pt-ink)] text-[var(--pt-ink)] hover:bg-[var(--pt-ink)] hover:text-[var(--pt-cream)] transition-colors"
+                      >
+                        <SocialGlyph platform={s.platform} />
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <PNote className="text-[20px] mt-2">no addresses yet…</PNote>
+                )}
+              </TornNote>
+            </PReveal>
+            {about.signature ? (
+              <PReveal delay={1}>
+                <TornNote className="-rotate-2 h-full">
+                  <p className="pt-hand text-[24px] leading-[1.3] text-[var(--pt-ink)]">
+                    &ldquo;{about.signature}&rdquo;
                   </p>
-                  {liveSocials.length > 0 ? (
-                    <div className="mt-3 flex items-center gap-2">
-                      {liveSocials.slice(0, 4).map((s) => (
-                        <a
-                          key={s.id}
-                          href={s.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          aria-label={s.platform}
-                          title={s.display_name || s.platform}
-                          className="inline-flex items-center justify-center w-11 h-11 border-2 border-[var(--pt-ink)] text-[var(--pt-ink)] hover:bg-[var(--pt-ink)] hover:text-[var(--pt-cream)] transition-colors"
-                        >
-                          <SocialGlyph platform={s.platform} />
-                        </a>
-                      ))}
-                    </div>
-                  ) : (
-                    <PNote className="text-[20px] mt-2">no addresses yet…</PNote>
-                  )}
+                  <p className="mt-2 font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--pt-brown)]">
+                    — {config.site_name}
+                  </p>
                 </TornNote>
               </PReveal>
-              {about.signature ? (
-                <PReveal delay={1}>
-                  <TornNote className="-rotate-2">
-                    <p className="pt-hand text-[24px] leading-[1.3] text-[var(--pt-ink)]">
-                      &ldquo;{about.signature}&rdquo;
-                    </p>
-                    <p className="mt-2 font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--pt-brown)]">
-                      — {config.site_name}
-                    </p>
-                  </TornNote>
-                </PReveal>
-              ) : null}
-            </div>
+            ) : null}
           </div>
 
           {/* contact anchor */}
