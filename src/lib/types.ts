@@ -122,7 +122,7 @@ export const PLACEHOLDER_SOCIALS: SocialLink[] = [
 
 /** Offline-safe grey placeholder boxes (data-URI SVG) — no external images. */
 function loremBox(label: string, w: number, h: number) {
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'><rect width='100%' height='100%' fill='#e6dfd1'/><rect x='14' y='14' width='${w - 28}' height='${h - 28}' fill='none' stroke='#b6ab9c' stroke-width='2' stroke-dasharray='8 6'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Georgia, serif' font-style='italic' font-size='26' fill='#8d857a'>${label}</text></svg>`
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'><rect width='100%' height='100%' fill='#E7E0D0'/><rect x='14' y='14' width='${w - 28}' height='${h - 28}' fill='none' stroke='#A39A87' stroke-width='2' stroke-dasharray='8 6'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Georgia, serif' font-style='italic' font-size='26' fill='#6F675B'>${label}</text></svg>`
   return `data:image/svg+xml,${encodeURIComponent(svg)}`
 }
 

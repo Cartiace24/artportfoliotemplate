@@ -31,8 +31,8 @@ export function SmartImage({
 
   if (!current) {
     return (
-      <div className={`grid place-items-center bg-[#efe7d6] ${className ?? ''}`} role="img" aria-label={`${alt} — image unavailable`}>
-        <span className="font-hand text-[22px] text-[#8a6f5c]">♡</span>
+      <div className={`grid place-items-center bg-parchment ${className ?? ''}`} role="img" aria-label={`${alt} — image unavailable`}>
+        <span className="font-display italic text-[20px] text-muted">Untitled</span>
       </div>
     )
   }

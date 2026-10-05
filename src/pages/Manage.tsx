@@ -114,13 +114,13 @@ function useManageData(token: string | null, authed: boolean) {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-[#8d857a]">{label}</span>
+      <span className="text-[12px] font-bold uppercase tracking-[0.12em] text-[#6F675B]">{label}</span>
       <div className="mt-1.5">{children}</div>
     </label>
   )
 }
 
-const inputCls = 'w-full rounded-xl border border-[#e6dcc8] bg-white px-4 py-2.5 text-[14.5px] text-[#40203f] placeholder:text-[#b6ab9c] focus:border-[#5b2b4e] focus:outline-none'
+const inputCls = 'w-full rounded-xl border border-[#DCD4C2] bg-white px-4 py-2.5 text-[14.5px] text-[#1E1C18] placeholder:text-[#A39A87] focus:border-[#1E1C18] focus:outline-none'
 
 export function Manage() {
   const { token = '' } = useParams()
@@ -154,7 +154,7 @@ export function Manage() {
   if (checking) {
     return (
       <main className="min-h-dvh grid place-items-center px-4">
-        <p className="font-hand text-[26px] text-[#8a6f5c] flex items-center gap-3">
+        <p className="font-display text-[26px] text-[#6F675B] flex items-center gap-3">
           <Loader2 className="w-6 h-6 animate-spin" /> opening your studio…
         </p>
       </main>
@@ -164,14 +164,14 @@ export function Manage() {
   if (!token || !authed) {
     return (
       <main className="min-h-dvh grid place-items-center px-4 py-16">
-        <div className="w-full max-w-md rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-8 text-center">
-          <p className="mx-auto w-12 h-12 rounded-full bg-[#f2d8d3]/60 grid place-items-center text-[22px]" aria-hidden>🔒</p>
-          <h1 className="font-serif-ed italic text-[28px] text-[#40203f] mt-3">This studio link doesn&rsquo;t work</h1>
-          <p className="text-[14px] text-[#6d5f6b] mt-2 leading-relaxed">
-            Management links are long, private URLs like <code className="bg-[#f3ecdd] px-1.5 py-0.5 rounded text-[12.5px]">/manage/…token…</code>.
+        <div className="w-full max-w-md rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] print-shadow p-8 text-center">
+          <p className="mx-auto w-12 h-12 rounded-full bg-[#F4DCD0]/60 grid place-items-center text-[22px]" aria-hidden>🔒</p>
+          <h1 className="font-display italic text-[28px] text-[#1E1C18] mt-3">This studio link doesn&rsquo;t work</h1>
+          <p className="text-[14px] text-[#4A443B] mt-2 leading-relaxed">
+            Management links are long, private URLs like <code className="bg-[#E9E2D2] px-1.5 py-0.5 rounded text-[12.5px]">/manage/…token…</code>.
             If you lost yours, ask your developer to generate a fresh one — the old one stops working immediately.
           </p>
-          <Link to="/" className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-6 py-3 font-semibold">
+          <Link to="/" className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#1E1C18] text-white px-6 py-3 font-semibold">
             <ArrowLeft className="w-4 h-4" /> Back to the gallery
           </Link>
         </div>
@@ -182,20 +182,20 @@ export function Manage() {
   return (
     <main id="main" className="min-h-dvh pb-16">
       <PageMeta title={`Studio — ${data.config.site_name}`} description="Private site management studio." />
-      <div className="sticky top-0 z-40 bg-[#FAF6EF]/94 backdrop-blur border-b border-[#e6dcc8]">
+      <div className="sticky top-0 z-40 bg-[#F5F1E8]/94 backdrop-blur border-b border-[#DCD4C2]">
         <div className="mx-auto max-w-[1080px] px-4 sm:px-6 h-[64px] flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Link to="/" className="w-9 h-9 rounded-full border border-[#e6dcc8] bg-white grid place-items-center hover:bg-[#f3ecdd]" aria-label="View public site">
+            <Link to="/" className="w-9 h-9 rounded-full border border-[#DCD4C2] bg-white grid place-items-center hover:bg-[#E9E2D2]" aria-label="View public site">
               <Eye className="w-4 h-4" />
             </Link>
             <div>
-              <p className="font-hand text-[22px] leading-none font-bold text-[#40203f]">studio ✿</p>
-              <p className="text-[11px] text-[#8d857a] font-semibold tracking-wide">
+              <p className="font-display text-[22px] leading-none font-bold text-[#1E1C18]">studio ✿</p>
+              <p className="text-[11px] text-[#6F675B] font-semibold tracking-wide">
                 {isDemoAllowed ? 'DEMO MODE — changes stay in this browser' : 'connected to Supabase'} • {mode}
               </p>
             </div>
           </div>
-          <Link to="/" className="text-[13px] font-bold text-[#5b2b4e] underline underline-offset-4">view site →</Link>
+          <Link to="/" className="text-[13px] font-bold text-[#1E1C18] underline underline-offset-4">view site →</Link>
         </div>
         <div className="mx-auto max-w-[1080px] px-4 sm:px-6 pb-3 flex gap-2 overflow-x-auto no-scrollbar" role="tablist" aria-label="Management sections">
           {TABS.map((t) => (
@@ -205,7 +205,7 @@ export function Manage() {
               aria-selected={tab === t.id}
               onClick={() => setTab(t.id)}
               className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13.5px] font-bold border transition-colors min-h-[44px] ${
-                tab === t.id ? 'bg-[#5b2b4e] text-white border-[#5b2b4e]' : 'bg-white text-[#5b2b4e] border-[#e6dcc8]'
+                tab === t.id ? 'bg-[#1E1C18] text-white border-[#1E1C18]' : 'bg-white text-[#1E1C18] border-[#DCD4C2]'
               }`}
             >
               <t.icon className="w-3.5 h-3.5" aria-hidden /> {t.label}
@@ -216,7 +216,7 @@ export function Manage() {
 
       <div className="mx-auto max-w-[1080px] px-4 sm:px-6 pt-6">
         {data.loadError && (
-          <div role="alert" className="mb-4 rounded-2xl border border-[#c98a8a]/40 bg-[#f2d8d3]/40 px-5 py-4 text-[14px] font-semibold text-[#6e2f2f]">
+          <div role="alert" className="mb-4 rounded-2xl border border-[#B8491F]/40 bg-[#F4DCD0]/40 px-5 py-4 text-[14px] font-semibold text-[#8E2F16]">
             {data.loadError}
           </div>
         )}
@@ -259,7 +259,7 @@ function ToastMessage({ message }: { message: string }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 8 }}
       className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] inline-flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full px-5 py-3 text-[14px] font-semibold shadow-xl ${
-        err ? 'bg-[#6e2f2f] text-white' : 'bg-[#40203f] text-white'
+        err ? 'bg-[#8E2F16] text-white' : 'bg-[#1E1C18] text-white'
       }`}
       role={err ? 'alert' : 'status'}
     >
@@ -395,25 +395,25 @@ function OverviewTab({ data, say, onGo, token }: { data: Data; say: (m: string) 
 
   return (
     <div className="grid md:grid-cols-2 gap-5">
-      <div className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-6">
-        <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#8d857a]">Commission status</p>
-        <p className={`mt-2 font-serif-ed text-[36px] font-semibold ${open ? 'text-green-800' : 'text-[#6e2f2f]'}`}>
+      <div className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] print-shadow p-6">
+        <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#6F675B]">Commission status</p>
+        <p className={`mt-2 font-display text-[36px] font-semibold ${open ? 'text-green-800' : 'text-[#8E2F16]'}`}>
           {open ? '🟢 OPEN' : '🔴 CLOSED'}
         </p>
-        {settings.commission_message && <p className="mt-1 font-hand text-[20px] text-[#6d5f6b]">“{settings.commission_message}”</p>}
-        <p className="text-[13px] text-[#8d857a] mt-1">Slots: {settings.available_slots ?? '—'}</p>
+        {settings.commission_message && <p className="mt-1 font-display text-[20px] text-[#4A443B]">“{settings.commission_message}”</p>}
+        <p className="text-[13px] text-[#6F675B] mt-1">Slots: {settings.available_slots ?? '—'}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           <button onClick={() => onGo('commissions')}
-            className="rounded-full bg-[#5b2b4e] text-white px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">Change status →</button>
+            className="rounded-full bg-[#1E1C18] text-white px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">Change status →</button>
           <button onClick={() => onGo('artwork')}
-            className="rounded-full border border-[#5b2b4e]/40 text-[#5b2b4e] px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">Manage artwork</button>
+            className="rounded-full border border-[#1E1C18]/40 text-[#1E1C18] px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">Manage artwork</button>
         </div>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link to="/" className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#5b2b4e] underline underline-offset-4 min-h-[44px]">
+          <Link to="/" className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#1E1C18] underline underline-offset-4 min-h-[44px]">
             <Eye className="w-4 h-4" aria-hidden /> View live site
           </Link>
           <button onClick={() => onGo('inbox')}
-            className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#5b2b4e] underline underline-offset-4 min-h-[44px]">
+            className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#1E1C18] underline underline-offset-4 min-h-[44px]">
             <Inbox className="w-4 h-4" aria-hidden /> Check requests
           </button>
         </div>
@@ -425,20 +425,20 @@ function OverviewTab({ data, say, onGo, token }: { data: Data; say: (m: string) 
           ['Pricing', String(data.prices.filter((p) => p.enabled).length), 'active price points'],
           ['Socials', String(data.socials.filter((s) => s.enabled).length), 'live links'],
         ].map(([k, v, sub]) => (
-          <div key={k} className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-5">
-            <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#8d857a]">{k}</p>
-            <p className="font-serif-ed text-[34px] text-[#40203f] font-semibold">{v}</p>
-            <p className="text-[12.5px] text-[#8d857a]">{sub}</p>
+          <div key={k} className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] p-5">
+            <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[#6F675B]">{k}</p>
+            <p className="font-display text-[34px] text-[#1E1C18] font-semibold">{v}</p>
+            <p className="text-[12.5px] text-[#6F675B]">{sub}</p>
           </div>
         ))}
       </div>
-      <div className="md:col-span-2 rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-5 flex flex-wrap items-center gap-3">
+      <div className="md:col-span-2 rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] p-5 flex flex-wrap items-center gap-3">
         <div className="flex-1 min-w-[220px]">
-          <p className="font-serif-ed italic text-[19px] text-[#40203f]">Backup ✿</p>
-          <p className="text-[13px] text-[#8d857a]">Download everything as JSON, or restore from a backup file.</p>
+          <p className="font-display italic text-[19px] text-[#1E1C18]">Backup ✿</p>
+          <p className="text-[13px] text-[#6F675B]">Download everything as JSON, or restore from a backup file.</p>
         </div>
         <button onClick={exportBackup}
-          className="inline-flex items-center gap-2 rounded-full border border-[#5b2b4e]/40 text-[#5b2b4e] px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">
+          className="inline-flex items-center gap-2 rounded-full border border-[#1E1C18]/40 text-[#1E1C18] px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">
           <Download className="w-4 h-4" aria-hidden /> Export
         </button>
         <input ref={fileRef} type="file" accept="application/json,.json" className="sr-only" aria-label="Choose backup file"
@@ -448,12 +448,12 @@ function OverviewTab({ data, say, onGo, token }: { data: Data; say: (m: string) 
             if (f) importBackup(f)
           }} />
         <button onClick={() => fileRef.current?.click()} disabled={restoring}
-          className="inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-5 py-2.5 text-[13.5px] font-bold min-h-[44px] disabled:opacity-60">
+          className="inline-flex items-center gap-2 rounded-full bg-[#1E1C18] text-white px-5 py-2.5 text-[13.5px] font-bold min-h-[44px] disabled:opacity-60">
           {restoring ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Upload className="w-4 h-4" aria-hidden />}
           {restoring ? 'Restoring…' : 'Restore'}
         </button>
       </div>
-      <p className="md:col-span-2 rounded-2xl bg-[#f3ecdd]/60 border border-dashed border-[#c9b995] p-4 text-[13.5px] text-[#6d5f6b]">
+      <p className="md:col-span-2 rounded-2xl bg-[#E9E2D2]/60 border border-dashed border-[#C9BFA9] p-4 text-[13.5px] text-[#4A443B]">
         ✿ Tip: everything you change here appears on the public site instantly — no redeploy needed
         {isDemoAllowed ? ' (demo mode: changes stay in this browser until Supabase is connected).' : '.'}
       </p>
@@ -497,13 +497,13 @@ function CommissionsTab({ data, say, token }: { data: Data; say: (m: string) => 
   }
 
   return (
-    <div className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-6 max-w-2xl">
-      <h2 className="font-serif-ed italic text-[26px] text-[#40203f]">Commission status</h2>
+    <div className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] print-shadow p-6 max-w-2xl">
+      <h2 className="font-display italic text-[26px] text-[#1E1C18]">Commission status</h2>
       <div className="mt-4 flex gap-3" role="radiogroup" aria-label="Commission status">
         {(['open', 'closed'] as const).map((v) => (
           <button key={v} role="radio" aria-checked={draft.commission_status === v} onClick={() => setDraft({ ...draft, commission_status: v })}
             className={`flex-1 rounded-xl border-2 px-4 py-3.5 font-bold text-[15px] transition-colors ${
-              draft.commission_status === v ? (v === 'open' ? 'border-green-700 bg-green-50 text-green-900' : 'border-[#6e2f2f] bg-[#f2d8d3]/40 text-[#6e2f2f]') : 'border-[#e6dcc8] text-[#8d857a]'
+              draft.commission_status === v ? (v === 'open' ? 'border-green-700 bg-green-50 text-green-900' : 'border-[#8E2F16] bg-[#F4DCD0]/40 text-[#8E2F16]') : 'border-[#DCD4C2] text-[#6F675B]'
             }`}>
             {v === 'open' ? '🟢 Open' : '🔴 Closed'}
           </button>
@@ -519,7 +519,7 @@ function CommissionsTab({ data, say, token }: { data: Data; say: (m: string) => 
             onChange={(e) => setDraft({ ...draft, available_slots: e.target.value === '' ? null : Number(e.target.value) })} />
         </Field>
         <button onClick={save} disabled={saving}
-          className="inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-7 py-3 font-bold disabled:opacity-60 min-h-[48px]">
+          className="inline-flex items-center gap-2 rounded-full bg-[#1E1C18] text-white px-7 py-3 font-bold disabled:opacity-60 min-h-[48px]">
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} {saving ? 'Saving…' : 'Save changes'}
         </button>
       </div>
@@ -574,24 +574,24 @@ function PricingTab({ data, say, token }: { data: Data; say: (m: string) => void
   return (
     <div className="space-y-5 max-w-3xl">
       {groups.map(([cat, rows]) => (
-        <section key={cat} className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-6">
-          <h2 className="font-serif-ed italic text-[24px] text-[#40203f]">{cat}</h2>
+        <section key={cat} className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] print-shadow p-6">
+          <h2 className="font-display italic text-[24px] text-[#1E1C18]">{cat}</h2>
           <div className="mt-4 space-y-3">
             {[...rows].sort((a, b) => a.sort_order - b.sort_order).map((p) => (
-              <div key={p.id} className="flex flex-wrap items-center gap-3 rounded-xl bg-[#faf3e8] border border-[#e6dcc8]/70 p-3">
+              <div key={p.id} className="flex flex-wrap items-center gap-3 rounded-xl bg-[#EFE8D6] border border-[#DCD4C2]/70 p-3">
                 <span className="w-16 font-bold text-[14px]">{p.type}</span>
                 <label className="flex items-center gap-1.5 text-[14px] font-semibold">
                   <span aria-hidden>$</span>
                   <input type="number" min={0} value={p.price} onChange={(e) => update(p.id, { price: Number(e.target.value) })}
-                    className="w-24 rounded-lg border border-[#e6dcc8] bg-white px-3 py-2" aria-label={`${cat} ${p.type} price`} />
+                    className="w-24 rounded-lg border border-[#DCD4C2] bg-white px-3 py-2" aria-label={`${cat} ${p.type} price`} />
                 </label>
                 <button onClick={() => update(p.id, { enabled: !p.enabled })}
                   aria-pressed={p.enabled}
-                  className={`rounded-full px-4 py-2 text-[12.5px] font-bold border ${p.enabled ? 'bg-green-100 border-green-300 text-green-900' : 'bg-white border-[#e6dcc8] text-[#8d857a]'}`}>
+                  className={`rounded-full px-4 py-2 text-[12.5px] font-bold border ${p.enabled ? 'bg-green-100 border-green-300 text-green-900' : 'bg-white border-[#DCD4C2] text-[#6F675B]'}`}>
                   {p.enabled ? '● Active' : '○ Hidden'}
                 </button>
                 <button onClick={() => saveRow(p)} disabled={saving === p.id}
-                  className="ml-auto rounded-full bg-[#5b2b4e] text-white px-5 py-2 text-[13px] font-bold disabled:opacity-60 min-h-[40px]">
+                  className="ml-auto rounded-full bg-[#1E1C18] text-white px-5 py-2 text-[13px] font-bold disabled:opacity-60 min-h-[40px]">
                   {saving === p.id ? '…' : 'Save'}
                 </button>
               </div>
@@ -702,7 +702,7 @@ function ArtworkTab({ data, say, token }: { data: Data; say: (m: string) => void
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <p className="text-[14px] text-[#6d5f6b]"><strong>{artworks.length}</strong> pieces • reorder with ↑ ↓ then save • ★ = homepage</p>
+        <p className="text-[14px] text-[#4A443B]"><strong>{artworks.length}</strong> pieces • reorder with ↑ ↓ then save • ★ = homepage</p>
         <div className="flex flex-wrap gap-2">
           {orderDirty && (
             <button onClick={saveOrder} disabled={savingOrder}
@@ -712,7 +712,7 @@ function ArtworkTab({ data, say, token }: { data: Data; say: (m: string) => void
             </button>
           )}
           <button onClick={() => setEditing({ id: `new-${Date.now()}`, title: '', category: 'Lorem', description: '', image_path: '', year: String(new Date().getFullYear()), featured: true, sort_order: artworks.length + 1 })}
-            className="inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">
+            className="inline-flex items-center gap-2 rounded-full bg-[#1E1C18] text-white px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">
             <ImagePlus className="w-4 h-4" aria-hidden /> Add artwork
           </button>
         </div>
@@ -720,18 +720,18 @@ function ArtworkTab({ data, say, token }: { data: Data; say: (m: string) => void
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {artworks.map((a) => (
-          <article key={a.id} className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-2.5 print-shadow">
+          <article key={a.id} className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] p-2.5 print-shadow">
             <img src={publicArtUrl(a.image_path) ?? ''} alt={a.title} loading="lazy" className="rounded-xl w-full aspect-[4/3] object-cover art-img" />
             <div className="px-1.5 py-2">
               <p className="font-bold text-[14px] truncate">{a.title || '(untitled)'} {a.featured && <span aria-label="featured">★</span>}</p>
-              <p className="text-[12px] text-[#8d857a]">{a.category} {a.year ? `• ${a.year}` : ''}</p>
+              <p className="text-[12px] text-[#6F675B]">{a.category} {a.year ? `• ${a.year}` : ''}</p>
               <div className="mt-2 flex flex-wrap gap-1.5">
-                <button onClick={() => setEditing(a)} className="rounded-full border border-[#e6dcc8] px-4 py-2 text-[12.5px] font-bold hover:bg-[#f3ecdd] min-h-[44px]">Edit</button>
-                <button onClick={() => toggleFeatured(a)} className="rounded-full border border-[#e6dcc8] px-4 py-2 text-[12.5px] font-bold hover:bg-[#f3ecdd] min-h-[44px]" aria-pressed={a.featured}>
+                <button onClick={() => setEditing(a)} className="rounded-full border border-[#DCD4C2] px-4 py-2 text-[12.5px] font-bold hover:bg-[#E9E2D2] min-h-[44px]">Edit</button>
+                <button onClick={() => toggleFeatured(a)} className="rounded-full border border-[#DCD4C2] px-4 py-2 text-[12.5px] font-bold hover:bg-[#E9E2D2] min-h-[44px]" aria-pressed={a.featured}>
                   {a.featured ? '★ Featured' : '☆ Feature'}
                 </button>
-                <button onClick={() => move(a.id, -1)} className="rounded-full border border-[#e6dcc8] px-4 py-2 text-[12.5px] font-bold min-h-[44px] min-w-[44px]" aria-label={`Move ${a.title || 'artwork'} earlier`}>↑</button>
-                <button onClick={() => move(a.id, 1)} className="rounded-full border border-[#e6dcc8] px-4 py-2 text-[12.5px] font-bold min-h-[44px] min-w-[44px]" aria-label={`Move ${a.title || 'artwork'} later`}>↓</button>
+                <button onClick={() => move(a.id, -1)} className="rounded-full border border-[#DCD4C2] px-4 py-2 text-[12.5px] font-bold min-h-[44px] min-w-[44px]" aria-label={`Move ${a.title || 'artwork'} earlier`}>↑</button>
+                <button onClick={() => move(a.id, 1)} className="rounded-full border border-[#DCD4C2] px-4 py-2 text-[12.5px] font-bold min-h-[44px] min-w-[44px]" aria-label={`Move ${a.title || 'artwork'} later`}>↓</button>
                 <button
                   onClick={() => remove(a.id)}
                   className={`rounded-full border px-4 py-2 text-[12.5px] font-bold min-h-[44px] ${
@@ -849,10 +849,10 @@ function ArtworkEditor({ art, isNew, onChange, onClose, onSave, onFile, uploadin
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-[80] grid place-items-center p-4" role="dialog" aria-modal="true" aria-label="Artwork editor">
-      <div className="absolute inset-0 bg-[#2b1530]/70" onClick={onClose} />
+      <div className="absolute inset-0 bg-[#161411]/70" onClick={onClose} />
       <motion.div initial={{ y: 18, scale: 0.98 }} animate={{ y: 0, scale: 1 }} exit={{ y: 10, scale: 0.98 }}
-        className="relative w-full max-w-lg max-h-[90dvh] overflow-auto rounded-2xl bg-[#FAF6EF] border border-[#e6dcc8] p-6">
-        <h3 className="font-serif-ed italic text-[24px] text-[#40203f]">{isNew ? 'Add artwork ✿' : 'Edit artwork ✎'}</h3>
+        className="relative w-full max-w-lg max-h-[90dvh] overflow-auto rounded-2xl bg-[#F5F1E8] border border-[#DCD4C2] p-6">
+        <h3 className="font-display italic text-[24px] text-[#1E1C18]">{isNew ? 'Add artwork ✿' : 'Edit artwork ✎'}</h3>
         <div className="mt-4">
           <label
             onDragOver={(e) => {
@@ -866,7 +866,7 @@ function ArtworkEditor({ art, isNew, onChange, onClose, onSave, onFile, uploadin
               dropFile(e.dataTransfer.files?.[0])
             }}
             className={`block rounded-2xl border-2 border-dashed p-4 text-center cursor-pointer transition-colors min-h-[44px] ${
-              dragOver ? 'border-[#5b2b4e] bg-[#e7ddf0]/50' : 'border-[#c9b995] bg-white hover:bg-[#faf3e8]'
+              dragOver ? 'border-[#1E1C18] bg-[#E9E6D2]/50' : 'border-[#C9BFA9] bg-white hover:bg-[#EFE8D6]'
             }`}
           >
             <input
@@ -881,9 +881,9 @@ function ArtworkEditor({ art, isNew, onChange, onClose, onSave, onFile, uploadin
             {preview ? (
               <img src={preview} alt="Artwork preview" className="mx-auto rounded-xl max-h-56 object-contain" />
             ) : (
-              <span className="font-hand text-[22px] text-[#8a6f5c]">drop an image here, or click to browse ♡</span>
+              <span className="font-display text-[22px] text-[#6F675B]">drop an image here, or click to browse ♡</span>
             )}
-            <span className="mt-2 block text-[12px] text-[#8d857a] font-semibold">
+            <span className="mt-2 block text-[12px] text-[#6F675B] font-semibold">
               {uploading ? progress || 'Uploading…' : 'PNG / JPG / WebP up to 8MB'}
             </span>
           </label>
@@ -900,13 +900,13 @@ function ArtworkEditor({ art, isNew, onChange, onClose, onSave, onFile, uploadin
           </div>
           <Field label="Description"><textarea className={inputCls} rows={3} value={art.description ?? ''} onChange={(e) => onChange({ ...art, description: e.target.value })} placeholder="A few words about this piece…" /></Field>
           <label className="flex items-center gap-2.5 text-[14px] font-bold">
-            <input type="checkbox" checked={art.featured} onChange={(e) => onChange({ ...art, featured: e.target.checked })} className="w-5 h-5 accent-[#5b2b4e]" />
+            <input type="checkbox" checked={art.featured} onChange={(e) => onChange({ ...art, featured: e.target.checked })} className="w-5 h-5 accent-[#1E1C18]" />
             ★ Show on homepage
           </label>
         </div>
         <div className="mt-5 flex gap-2.5">
-          <button onClick={onClose} className="flex-1 rounded-full border border-[#e6dcc8] bg-white py-3 font-bold text-[14px]">Cancel</button>
-          <button onClick={onSave} disabled={uploading} className="flex-1 rounded-full bg-[#5b2b4e] text-white py-3 font-bold text-[14px] disabled:opacity-60">Save artwork ♡</button>
+          <button onClick={onClose} className="flex-1 rounded-full border border-[#DCD4C2] bg-white py-3 font-bold text-[14px]">Cancel</button>
+          <button onClick={onSave} disabled={uploading} className="flex-1 rounded-full bg-[#1E1C18] text-white py-3 font-bold text-[14px] disabled:opacity-60">Save artwork ♡</button>
         </div>
       </motion.div>
     </motion.div>
@@ -949,8 +949,8 @@ function AboutTab({ data, say, token }: { data: Data; say: (m: string) => void; 
   }
 
   return (
-    <div className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-6 max-w-2xl space-y-4">
-      <h2 className="font-serif-ed italic text-[26px] text-[#40203f]">About you ✿</h2>
+    <div className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] print-shadow p-6 max-w-2xl space-y-4">
+      <h2 className="font-display italic text-[26px] text-[#1E1C18]">About you ✿</h2>
       <Field label="Short tagline">
         <input className={inputCls} value={draft.short_description ?? ''} onChange={(e) => setDraft({ ...draft, short_description: e.target.value })} />
       </Field>
@@ -970,7 +970,7 @@ function AboutTab({ data, say, token }: { data: Data; say: (m: string) => void; 
         <div className="flex gap-2">
           <input className={inputCls} value={draft.profile_image_path ?? ''} placeholder="Upload below or paste path…"
             onChange={(e) => setDraft({ ...draft, profile_image_path: e.target.value })} />
-          <label className="shrink-0 rounded-xl bg-[#f3ecdd] border border-[#e6dcc8] px-4 py-2.5 text-[13px] font-bold cursor-pointer hover:bg-[#efe3cd]">
+          <label className="shrink-0 rounded-xl bg-[#E9E2D2] border border-[#DCD4C2] px-4 py-2.5 text-[13px] font-bold cursor-pointer hover:bg-[#efe3cd]">
             <input type="file" accept="image/*" className="sr-only" onChange={async (e) => {
               const f = e.target.files?.[0]
               if (!f) return
@@ -984,7 +984,7 @@ function AboutTab({ data, say, token }: { data: Data; say: (m: string) => void; 
           </label>
         </div>
       </Field>
-      <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-7 py-3 font-bold disabled:opacity-60 min-h-[48px]">
+      <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#1E1C18] text-white px-7 py-3 font-bold disabled:opacity-60 min-h-[48px]">
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} Save about
       </button>
     </div>
@@ -1053,15 +1053,15 @@ function SocialsTab({ data, say, token }: { data: Data; say: (m: string) => void
     <div className="max-w-2xl">
       <div className="space-y-3">
         {draft.map((s, i) => (
-          <div key={s.id} className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-4 flex flex-wrap gap-2.5 items-center">
+          <div key={s.id} className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] p-4 flex flex-wrap gap-2.5 items-center">
             <select value={s.platform} onChange={(e) => setDraft(draft.map((x, k) => (k === i ? { ...x, platform: e.target.value } : x)))}
-              className="rounded-lg border border-[#e6dcc8] bg-white px-3 py-2 text-[13.5px] font-bold">
+              className="rounded-lg border border-[#DCD4C2] bg-white px-3 py-2 text-[13.5px] font-bold">
               {['X', 'Instagram', 'TikTok', 'Twitch', 'Ko-fi', 'Cara', 'Bluesky', 'Facebook', 'YouTube', 'Discord', 'Other'].map((p) => <option key={p}>{p}</option>)}
             </select>
             <input value={s.url} placeholder="https://…" onChange={(e) => setDraft(draft.map((x, k) => (k === i ? { ...x, url: e.target.value } : x)))}
-              className="flex-1 min-w-[180px] rounded-lg border border-[#e6dcc8] px-3 py-2 text-[13.5px]" aria-label={`${s.platform} URL`} />
+              className="flex-1 min-w-[180px] rounded-lg border border-[#DCD4C2] px-3 py-2 text-[13.5px]" aria-label={`${s.platform} URL`} />
             <button onClick={() => setDraft(draft.map((x, k) => (k === i ? { ...x, enabled: !x.enabled } : x)))} aria-pressed={s.enabled}
-              className={`rounded-full px-3.5 py-2 text-[12px] font-bold border ${s.enabled ? 'bg-green-100 border-green-300 text-green-900' : 'bg-white text-[#8d857a] border-[#e6dcc8]'}`}>
+              className={`rounded-full px-3.5 py-2 text-[12px] font-bold border ${s.enabled ? 'bg-green-100 border-green-300 text-green-900' : 'bg-white text-[#6F675B] border-[#DCD4C2]'}`}>
               {s.enabled ? 'On' : 'Off'}
             </button>
             <button onClick={() => removeRow(i)} className="rounded-full border border-red-200 text-red-800 p-2.5 hover:bg-red-50 min-h-[44px] min-w-[44px] grid place-items-center" aria-label={`Remove ${s.platform} link`}>
@@ -1072,12 +1072,12 @@ function SocialsTab({ data, say, token }: { data: Data; say: (m: string) => void
       </div>
       <div className="mt-4 flex gap-2.5">
         <button onClick={() => setDraft([...draft, { id: `new-${Date.now()}`, platform: 'X', url: '', display_name: '', enabled: true, sort_order: draft.length + 1 }])}
-          className="rounded-full border border-[#5b2b4e]/40 text-[#5b2b4e] px-5 py-2.5 text-[13.5px] font-bold">+ Add link</button>
-        <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-7 py-2.5 font-bold disabled:opacity-60">
+          className="rounded-full border border-[#1E1C18]/40 text-[#1E1C18] px-5 py-2.5 text-[13.5px] font-bold">+ Add link</button>
+        <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#1E1C18] text-white px-7 py-2.5 font-bold disabled:opacity-60">
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} Save socials
         </button>
       </div>
-      <p className="mt-3 text-[12.5px] text-[#8d857a] flex gap-1.5"><TriangleAlert className="w-4 h-4 shrink-0" /> Never invent URLs — only add profiles you actually own. Empty links stay hidden on the public site.</p>
+      <p className="mt-3 text-[12.5px] text-[#6F675B] flex gap-1.5"><TriangleAlert className="w-4 h-4 shrink-0" /> Never invent URLs — only add profiles you actually own. Empty links stay hidden on the public site.</p>
     </div>
   )
 }
@@ -1138,9 +1138,9 @@ function InboxTab({ say, token }: { say: (m: string) => void; token: string }) {
 
   if (!isSupabaseConfigured) {
     return (
-      <div className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-8 text-center max-w-2xl">
-        <p className="font-hand text-[24px] text-[#8a6f5c]">the inbox lives in Supabase ✉</p>
-        <p className="mt-1 text-[14px] text-[#6d5f6b]">
+      <div className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] p-8 text-center max-w-2xl">
+        <p className="font-display text-[24px] text-[#6F675B]">the inbox lives in Supabase ✉</p>
+        <p className="mt-1 text-[14px] text-[#4A443B]">
           {isDemoAllowed
             ? 'Demo form submissions are not stored — connect Supabase and deploy the commission-request function to receive real requests.'
             : 'Studio is not connected.'}
@@ -1152,40 +1152,40 @@ function InboxTab({ say, token }: { say: (m: string) => void; token: string }) {
   return (
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-4">
-        <p className="text-[14px] text-[#6d5f6b]">
+        <p className="text-[14px] text-[#4A443B]">
           <strong>{requests.length}</strong> request{requests.length === 1 ? '' : 's'} — reply via the contact they left ♡
         </p>
-        <button onClick={load} className="inline-flex items-center gap-1.5 rounded-full border border-[#e6dcc8] bg-white px-4 py-2 text-[13px] font-bold hover:bg-[#f3ecdd] min-h-[44px]">
+        <button onClick={load} className="inline-flex items-center gap-1.5 rounded-full border border-[#DCD4C2] bg-white px-4 py-2 text-[13px] font-bold hover:bg-[#E9E2D2] min-h-[44px]">
           <RefreshCw className="w-3.5 h-3.5" aria-hidden /> Refresh
         </button>
       </div>
       {loading && (
         <div className="space-y-3" aria-hidden>
           {[0, 1].map((i) => (
-            <div key={i} className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-5 animate-pulse">
-              <div className="h-5 w-40 rounded bg-[#f3ecdd]" />
-              <div className="mt-2 h-4 rounded bg-[#faf3e8]" />
+            <div key={i} className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] p-5 animate-pulse">
+              <div className="h-5 w-40 rounded bg-[#E9E2D2]" />
+              <div className="mt-2 h-4 rounded bg-[#EFE8D6]" />
             </div>
           ))}
         </div>
       )}
       {error && !loading && (
-        <div role="alert" className="rounded-2xl border border-[#c98a8a]/40 bg-[#f2d8d3]/40 px-5 py-4 text-[14px] font-semibold text-[#6e2f2f]">
+        <div role="alert" className="rounded-2xl border border-[#B8491F]/40 bg-[#F4DCD0]/40 px-5 py-4 text-[14px] font-semibold text-[#8E2F16]">
           {error}
         </div>
       )}
       {!loading && !error && requests.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-[#c9b995] bg-[#fffdf7]/60 px-6 py-10 text-center">
-          <p className="font-hand text-[24px] text-[#8a6f5c]">no requests yet — share your commissions page! ✿</p>
+        <div className="rounded-2xl border border-dashed border-[#C9BFA9] bg-[#FBF9F4]/60 px-6 py-10 text-center">
+          <p className="font-display text-[24px] text-[#6F675B]">no requests yet — share your commissions page! ✿</p>
         </div>
       )}
       <div className="space-y-3">
         {requests.map((r) => (
-          <article key={r.id} className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-5">
+          <article key={r.id} className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] print-shadow p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="font-bold text-[15px] text-[#40203f]">{r.name} <span className="font-hand font-normal text-[#8a6f5c]">• {r.type}</span></p>
-                <p className="text-[12.5px] text-[#8d857a]">{r.contact} • {new Date(r.created_at).toLocaleString()}</p>
+                <p className="font-bold text-[15px] text-[#1E1C18]">{r.name} <span className="font-display font-normal text-[#6F675B]">• {r.type}</span></p>
+                <p className="text-[12.5px] text-[#6F675B]">{r.contact} • {new Date(r.created_at).toLocaleString()}</p>
               </div>
               <button
                 onClick={() => remove(r.id)}
@@ -1264,14 +1264,14 @@ function TermsTab({ data, say, token }: { data: Data; say: (m: string) => void; 
 
   return (
     <div className="max-w-2xl">
-      <p className="text-[14px] text-[#6d5f6b] mb-4">These sections appear on the public <strong>/tos</strong> page, in order.</p>
+      <p className="text-[14px] text-[#4A443B] mb-4">These sections appear on the public <strong>/tos</strong> page, in order.</p>
       <div className="space-y-3">
         {draft.map((s, i) => (
-          <div key={s.id} className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-4 space-y-2.5">
+          <div key={s.id} className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] p-4 space-y-2.5">
             <div className="flex gap-2.5">
               <input value={s.title} placeholder="Section title"
                 onChange={(e) => setDraft(draft.map((x, k) => (k === i ? { ...x, title: e.target.value } : x)))}
-                className="flex-1 rounded-lg border border-[#e6dcc8] bg-white px-3 py-2.5 text-[14px] font-bold min-h-[44px]"
+                className="flex-1 rounded-lg border border-[#DCD4C2] bg-white px-3 py-2.5 text-[14px] font-bold min-h-[44px]"
                 aria-label={`Section ${i + 1} title`} />
               <button
                 onClick={() => {
@@ -1285,15 +1285,15 @@ function TermsTab({ data, say, token }: { data: Data; say: (m: string) => void; 
             </div>
             <textarea value={s.body} rows={3} placeholder="Section text…"
               onChange={(e) => setDraft(draft.map((x, k) => (k === i ? { ...x, body: e.target.value } : x)))}
-              className="w-full rounded-lg border border-[#e6dcc8] bg-white px-3 py-2.5 text-[14px]"
+              className="w-full rounded-lg border border-[#DCD4C2] bg-white px-3 py-2.5 text-[14px]"
               aria-label={`Section ${i + 1} text`} />
           </div>
         ))}
       </div>
       <div className="mt-4 flex flex-wrap gap-2.5">
         <button onClick={() => setDraft([...draft, { id: `new-${Date.now()}`, title: '', body: '', sort_order: draft.length + 1 }])}
-          className="rounded-full border border-[#5b2b4e]/40 text-[#5b2b4e] px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">+ Add section</button>
-        <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-7 py-2.5 font-bold disabled:opacity-60 min-h-[44px]">
+          className="rounded-full border border-[#1E1C18]/40 text-[#1E1C18] px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">+ Add section</button>
+        <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#1E1C18] text-white px-7 py-2.5 font-bold disabled:opacity-60 min-h-[44px]">
           {saving ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Check className="w-4 h-4" aria-hidden />} Save terms
         </button>
       </div>
@@ -1341,9 +1341,9 @@ function SiteTab({ data, say, token }: { data: Data; say: (m: string) => void; t
   }
 
   return (
-    <div className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-6 max-w-2xl space-y-4">
-      <h2 className="font-serif-ed italic text-[26px] text-[#40203f]">Site ✿</h2>
-      <p className="text-[13.5px] text-[#8d857a] -mt-2">Name, tagline, and hero headline — used in the header, footer, and browser tab.</p>
+    <div className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] print-shadow p-6 max-w-2xl space-y-4">
+      <h2 className="font-display italic text-[26px] text-[#1E1C18]">Site ✿</h2>
+      <p className="text-[13.5px] text-[#6F675B] -mt-2">Name, tagline, and hero headline — used in the header, footer, and browser tab.</p>
       <Field label="Site name">
         <input className={inputCls} value={draft.site_name} onChange={(e) => setDraft({ ...draft, site_name: e.target.value })} placeholder="Lorem Ipsum" maxLength={60} />
       </Field>
@@ -1353,7 +1353,7 @@ function SiteTab({ data, say, token }: { data: Data; say: (m: string) => void; t
       <Field label="Hero headline">
         <input className={inputCls} value={draft.hero_title} onChange={(e) => setDraft({ ...draft, hero_title: e.target.value })} placeholder="It’s Lorem!" maxLength={80} />
       </Field>
-      <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-7 py-3 font-bold disabled:opacity-60 min-h-[48px]">
+      <button onClick={save} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[#1E1C18] text-white px-7 py-3 font-bold disabled:opacity-60 min-h-[48px]">
         {saving ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Check className="w-4 h-4" aria-hidden />} Save site settings
       </button>
     </div>
@@ -1417,28 +1417,28 @@ function AccessTab({ say, token }: { say: (m: string) => void; token: string }) 
 
   return (
     <div className="max-w-2xl space-y-5">
-      <div className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-6">
-        <h2 className="font-serif-ed italic text-[24px] text-[#40203f] flex items-center gap-2"><Lock className="w-5 h-5" /> Your private link</h2>
-        <p className="mt-2 text-[14px] text-[#6d5f6b] leading-relaxed">
+      <div className="rounded-2xl bg-[#FBF9F4] border border-[#DCD4C2] print-shadow p-6">
+        <h2 className="font-display italic text-[24px] text-[#1E1C18] flex items-center gap-2"><Lock className="w-5 h-5" /> Your private link</h2>
+        <p className="mt-2 text-[14px] text-[#4A443B] leading-relaxed">
           This URL <em>is</em> your password. Anyone with it can edit your site — so keep it in your password manager and never post it publicly.
           The token itself is never stored; only a SHA-256 hash lives in the database.
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           <button onClick={() => copyText(window.location.href, 'current')}
-            className="inline-flex items-center gap-2 rounded-full border border-[#e6dcc8] bg-white px-5 py-2.5 text-[13.5px] font-bold hover:bg-[#f3ecdd] min-h-[44px]">
+            className="inline-flex items-center gap-2 rounded-full border border-[#DCD4C2] bg-white px-5 py-2.5 text-[13.5px] font-bold hover:bg-[#E9E2D2] min-h-[44px]">
             <Copy className="w-4 h-4" aria-hidden /> {copied === 'current' ? 'Copied ✓' : 'Copy link'}
           </button>
-          <a href="/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#e6dcc8] bg-white px-5 py-2.5 text-[13.5px] font-bold hover:bg-[#f3ecdd] min-h-[44px]">
+          <a href="/" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-[#DCD4C2] bg-white px-5 py-2.5 text-[13.5px] font-bold hover:bg-[#E9E2D2] min-h-[44px]">
             <Eye className="w-4 h-4" aria-hidden /> Preview site
           </a>
         </div>
       </div>
 
-      <div className="rounded-2xl bg-[#40203f] text-[#FAF6EF] p-6">
-        <h2 className="font-serif-ed italic text-[24px] flex items-center gap-2"><RefreshCw className="w-5 h-5" /> Lost your link? Make a new one</h2>
+      <div className="rounded-2xl bg-[#1E1C18] text-[#F5F1E8] p-6">
+        <h2 className="font-display italic text-[24px] flex items-center gap-2"><RefreshCw className="w-5 h-5" /> Lost your link? Make a new one</h2>
         <p className="mt-2 text-[13.5px] opacity-80">Generating a new token immediately disables this one. Save the new link somewhere safe!</p>
         {!confirm ? (
-          <button onClick={() => setConfirm(true)} className="mt-4 rounded-full bg-[#FAF6EF] text-[#40203f] px-6 py-2.5 font-bold text-[14px] min-h-[44px]">
+          <button onClick={() => setConfirm(true)} className="mt-4 rounded-full bg-[#F5F1E8] text-[#1E1C18] px-6 py-2.5 font-bold text-[14px] min-h-[44px]">
             Generate new private link…
           </button>
         ) : (
@@ -1446,18 +1446,18 @@ function AccessTab({ say, token }: { say: (m: string) => void; token: string }) 
             <p className="text-[14px] font-bold">Are you sure? This link will stop working right away.</p>
             <div className="mt-3 flex flex-wrap gap-2">
               <button onClick={() => setConfirm(false)} className="rounded-full border border-white/30 px-5 py-2.5 text-[13.5px] font-bold min-h-[44px]">Keep this link</button>
-              <button onClick={rotate} disabled={working} className="rounded-full bg-[#FAF6EF] text-[#40203f] px-5 py-2.5 text-[13.5px] font-bold disabled:opacity-60 min-h-[44px]">
+              <button onClick={rotate} disabled={working} className="rounded-full bg-[#F5F1E8] text-[#1E1C18] px-5 py-2.5 text-[13.5px] font-bold disabled:opacity-60 min-h-[44px]">
                 {working ? 'Working…' : 'Yes, replace it'}
               </button>
             </div>
           </div>
         )}
         {fullLink && (
-          <div className="mt-4 rounded-xl bg-[#FAF6EF] text-[#40203f] p-4 break-all">
-            <p className="text-[12px] font-bold uppercase tracking-wider text-[#8a6f5c]">Your new private link (copy now!)</p>
+          <div className="mt-4 rounded-xl bg-[#F5F1E8] text-[#1E1C18] p-4 break-all">
+            <p className="text-[12px] font-bold uppercase tracking-wider text-[#6F675B]">Your new private link (copy now!)</p>
             <p className="mt-1 text-[13.5px] font-mono">{fullLink}</p>
             <button onClick={() => copyText(fullLink, 'new')}
-              className="mt-2 inline-flex items-center gap-2 rounded-full bg-[#5b2b4e] text-white px-5 py-2.5 text-[13px] font-bold min-h-[44px]">
+              className="mt-2 inline-flex items-center gap-2 rounded-full bg-[#1E1C18] text-white px-5 py-2.5 text-[13px] font-bold min-h-[44px]">
               <Copy className="w-3.5 h-3.5" aria-hidden /> {copied === 'new' ? 'Copied ✓' : 'Copy new link'}
             </button>
           </div>

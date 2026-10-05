@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Check, Clock, Heart, Loader2, Mail, Send, TriangleAlert } from 'lucide-react'
+import { Check, Loader2, TriangleAlert } from 'lucide-react'
 import { CommissionProcess } from '../components/Commissions'
-import { Reveal, SectionHeading, Tape } from '../components/Bits'
+import { Eyebrow, Reveal, SectionHead } from '../components/Bits'
 import { ConfigError, InlineError } from '../components/States'
 import { PageMeta } from '../lib/meta'
 import { submitCommissionRequest } from '../lib/requests'
@@ -30,50 +30,56 @@ export function Commissions() {
   }
 
   return (
-    <main id="main" className="pt-[100px] mx-auto max-w-[1080px] px-4 sm:px-6 pb-8">
+    <main id="main" className="pt-[72px] mx-auto max-w-[1080px] px-4 sm:px-6 pb-8">
       <PageMeta
-        title={`${config.site_name} — Lorem Ipsum`}
+        title={`${config.site_name} — Commissions`}
         description={settings.commission_message ?? config.tagline}
         path="/commissions"
       />
-      <Reveal>
-        <p className="font-hand text-[22px] text-[#8a6f5c] -rotate-1">lorem ipsum dolor sit amet…</p>
-        <h1 className="font-serif-ed text-[44px] md:text-[60px] leading-none text-[#40203f] font-semibold mt-1">
-          Lorem <span className="italic">Ipsum</span>
-        </h1>
-        <div className="mt-3 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[13.5px] font-bold border" role="status"
-          style={open ? { background: '#dde5d2aa', borderColor: '#9aa88f66' } : { background: '#f2d8d355', borderColor: '#c98a8a66' }}>
-          {open ? '🟢 Commissions Open' : '🔴 Commissions Closed'}
-          {open && settings.available_slots != null && (
-            <span className="font-hand text-[17px] font-medium">— {settings.available_slots} slots left!</span>
+      <div className="py-10 md:py-14 border-b border-ink">
+        <Reveal>
+          <Eyebrow>Rate card</Eyebrow>
+          <h1 className="font-display text-[clamp(2.8rem,7vw,4.5rem)] leading-[1] text-ink mt-3">
+            Commissions
+          </h1>
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2" role="status">
+            <span className="inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.14em] uppercase">
+              <span className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-moss' : 'bg-accent'}`} aria-hidden />
+              <span className={open ? 'text-ink' : 'text-accent-deep'}>
+                {open ? 'Open for work' : 'Books closed'}
+              </span>
+            </span>
+            {open && settings.available_slots != null && (
+              <span className="font-mono text-[12px] text-muted">{settings.available_slots} slots left</span>
+            )}
+          </div>
+          {settings.commission_message && (
+            <p className="mt-3 text-[15.5px] leading-relaxed text-ink-soft max-w-[60ch]">{settings.commission_message}</p>
           )}
-        </div>
-        {settings.commission_message && (
-          <p className="mt-2 font-hand text-[20px] text-[#6d5f6b]">“{settings.commission_message}”</p>
-        )}
-      </Reveal>
+        </Reveal>
+      </div>
 
       {settingsError && (
-        <div className="mt-4">
+        <div className="mt-6">
           <InlineError message={settingsError} />
         </div>
       )}
       {isMisconfigured && (
-        <div className="mt-4">
+        <div className="mt-6">
           <ConfigError compact />
         </div>
       )}
 
-      <div className="mt-8 grid md:grid-cols-2 gap-6">
+      <div className="mt-10 grid md:grid-cols-2 gap-x-12 gap-y-10">
         {priceLoading && (
           <>
             {[0, 1].map((i) => (
-              <div key={i} className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] p-6 animate-pulse" aria-hidden>
-                <div className="h-7 w-32 rounded bg-[#f3ecdd]" />
+              <div key={i} className="animate-pulse" aria-hidden>
+                <div className="h-7 w-32 bg-parchment" />
                 <div className="mt-4 space-y-2">
-                  <div className="h-10 rounded bg-[#faf3e8]" />
-                  <div className="h-10 rounded bg-[#faf3e8]" />
-                  <div className="h-10 rounded bg-[#faf3e8]" />
+                  <div className="h-8 bg-parchment" />
+                  <div className="h-8 bg-parchment" />
+                  <div className="h-8 bg-parchment" />
                 </div>
               </div>
             ))}
@@ -85,8 +91,9 @@ export function Commissions() {
           </div>
         )}
         {!priceLoading && !priceError && categories.length === 0 && (
-          <div className="md:col-span-2 rounded-2xl border border-dashed border-[#c9b995] bg-[#fffdf7]/60 px-6 py-8 text-center">
-            <p className="font-hand text-[24px] text-[#8a6f5c]">pricing is being sketched… check back soon ♡</p>
+          <div className="md:col-span-2 border border-dashed border-muted/60 px-6 py-10 text-center">
+            <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">No rates yet</p>
+            <p className="mt-2 font-display text-[24px] text-ink">Rates are being set.</p>
           </div>
         )}
         {!priceLoading && !priceError && categories.map((cat, ci) => {
@@ -94,42 +101,44 @@ export function Commissions() {
           return (
             <motion.div
               key={cat.id}
-              initial={{ opacity: 0, y: 24, rotate: ci ? 0.6 : -0.6 }}
-              whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.55 }}
-              className="relative rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-6"
+              transition={{ duration: 0.5, delay: ci * 0.06 }}
             >
-              <Tape className="-top-3 left-8" />
-              <div className="flex items-center gap-3">
-                <span className="w-12 h-12 rounded-full bg-[#f3ecdd] grid place-items-center text-[22px]" aria-hidden>{ci === 0 ? '🐱' : '🎨'}</span>
-                <h2 className="font-serif-ed italic text-[26px] text-[#40203f]">{cat.name}</h2>
-              </div>
-              <dl className="mt-4 divide-y divide-[#e6dcc8]/70">
+              <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-accent">
+                {String(ci + 1).padStart(2, '0')}
+              </p>
+              <h2 className="font-display italic text-[30px] text-ink mt-1">{cat.name}</h2>
+              <dl className="mt-4 border-t border-ink">
                 {items.map((p) => (
-                  <div key={p.id} className="flex items-center justify-between py-3.5">
-                    <dt className="font-semibold text-[15px] text-[#4d4250]">{p.type}</dt>
-                    <dd className="font-serif-ed text-[24px] font-semibold text-[#40203f]">${p.price}</dd>
+                  <div key={p.id} className="flex items-baseline gap-3 py-3 border-b border-line">
+                    <dt className="text-[14.5px] font-medium text-ink shrink-0">{p.type}</dt>
+                    <span className="leader flex-1 h-px" aria-hidden />
+                    <dd className="font-display text-[22px] text-ink shrink-0">${p.price}</dd>
                   </div>
                 ))}
-                {items.length === 0 && <p className="py-4 text-[14px] text-[#8d857a]">Pricing coming soon ♡</p>}
+                {items.length === 0 && <p className="py-4 text-[14px] text-muted">Rates to be announced.</p>}
               </dl>
-              <p className="mt-2 text-[12.5px] text-[#8d857a]">+ complex backgrounds / extra characters may add a small fee — we&rsquo;ll chat first ♡</p>
             </motion.div>
           )
         })}
       </div>
+      {!priceLoading && !priceError && categories.length > 0 && (
+        <p className="mt-6 text-[13px] text-muted max-w-[62ch]">
+          Complex backgrounds or extra characters may add a small fee — that gets agreed before anything starts.
+        </p>
+      )}
 
-      <section className="mt-12">
-        <SectionHeading kicker="process" title="The process" note="simple & cozy" />
+      <section className="mt-16">
+        <SectionHead index="02" title="Process" note="Four steps" />
         <CommissionProcess />
       </section>
 
-      <section className="mt-12 grid lg:grid-cols-2 gap-6">
-        <div className="rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-6 relative">
-          <Tape className="-top-3 right-10" rose />
-          <h2 className="font-serif-ed italic text-[24px] text-[#40203f] flex items-center gap-2"><Clock className="w-5 h-5" /> Lorem ipsum</h2>
-          <ul className="mt-3 space-y-2.5 text-[14.5px] text-[#4d4250] leading-relaxed">
+      <section className="mt-16 grid lg:grid-cols-2 gap-8">
+        <div className="border border-line bg-cream p-6 sm:p-8">
+          <Eyebrow>Good to know</Eyebrow>
+          <ul className="mt-4 space-y-3 text-[14.5px] leading-relaxed text-ink-soft">
             {[
               'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
               'Sed do eiusmod tempor incididunt ut labore et dolore.',
@@ -137,26 +146,27 @@ export function Commissions() {
               'Duis aute irure dolor in reprehenderit in voluptate.',
               'Excepteur sint occaecat cupidatat non proident.',
             ].map((t) => (
-              <li key={t} className="flex gap-2.5"><Check className="w-4 h-4 mt-1 text-[#9aa88f] shrink-0" aria-hidden />{t}</li>
+              <li key={t} className="flex gap-3">
+                <Check className="w-4 h-4 mt-1 text-moss shrink-0" aria-hidden />
+                <span>{t}</span>
+              </li>
             ))}
           </ul>
-          <p className="mt-4 text-[13.5px] text-[#8d857a]">Full details live on the <a href="/tos" className="underline font-bold text-[#5b2b4e]">Terms of Service</a> page.</p>
+          <p className="mt-5 text-[13.5px] text-muted">
+            Full details on the <a href="/tos" className="font-semibold text-ink underline underline-offset-[5px] decoration-accent decoration-2">Terms page</a>.
+          </p>
         </div>
 
-        <div className="rounded-2xl bg-[#5b2b4e] text-[#FAF6EF] p-6 relative overflow-hidden">
-          <p className="font-hand text-[22px] text-[#e7ddf0] -rotate-1">lorem ipsum ✉</p>
-          <h2 className="font-serif-ed italic text-[26px] mt-1">Lorem ipsum dolor!</h2>
+        <div className="bg-ink text-cream p-6 sm:p-8">
+          <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-cream/60">Request a slot</p>
+          <h2 className="font-display italic text-[30px] mt-2">Start a piece</h2>
           {sent ? (
-            <div className="mt-4 rounded-xl bg-[#FAF6EF]/12 border border-white/20 p-5 text-center" role="status">
-              <Heart className="w-8 h-8 mx-auto" aria-hidden />
-              <p className="font-serif-ed italic text-[20px] mt-2">Thank you, {form.name || 'lorem'}!</p>
-              <p className="text-[14px] opacity-85 mt-1">Your request is in the inbox — expect a reply within a few days ♡</p>
+            <div className="mt-5 border border-cream/25 p-5 text-center" role="status">
+              <p className="font-display italic text-[22px]">Thank you{form.name ? `, ${form.name}` : ''}.</p>
+              <p className="text-[14px] text-cream/75 mt-1">Your request is in the inbox — expect a reply within a few days.</p>
             </div>
           ) : (
-            <form
-              className="mt-4 space-y-3"
-              onSubmit={onSubmit}
-            >
+            <form className="mt-5 space-y-4" onSubmit={onSubmit}>
               {/* Honeypot — invisible to humans, catches bots. */}
               <input
                 type="text"
@@ -167,44 +177,64 @@ export function Commissions() {
                 autoComplete="off"
                 aria-hidden="true"
               />
-              <div className="grid sm:grid-cols-2 gap-3">
+              <div className="grid sm:grid-cols-2 gap-4">
                 <label className="block">
-                  <span className="text-[12.5px] font-bold uppercase tracking-wider opacity-70">Your name</span>
-                  <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="mt-1 w-full rounded-xl bg-[#FAF6EF]/12 border border-white/25 px-4 py-2.5 placeholder:text-white/40 focus:bg-[#FAF6EF]/18"
-                    placeholder="Lorem ipsum" />
+                  <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-cream/60">Name</span>
+                  <input
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="mt-1.5 w-full bg-transparent border border-cream/30 px-4 py-2.5 text-[14.5px] placeholder:text-cream/35 focus:border-cream min-h-[48px]"
+                    placeholder="Lorem ipsum"
+                  />
                 </label>
                 <label className="block">
-                  <span className="text-[12.5px] font-bold uppercase tracking-wider opacity-70">Contact (discord / email)</span>
-                  <input required value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })}
-                    className="mt-1 w-full rounded-xl bg-[#FAF6EF]/12 border border-white/25 px-4 py-2.5 placeholder:text-white/40"
-                    placeholder="lorem@ipsum.dolor" />
+                  <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-cream/60">Contact</span>
+                  <input
+                    required
+                    value={form.contact}
+                    onChange={(e) => setForm({ ...form, contact: e.target.value })}
+                    className="mt-1.5 w-full bg-transparent border border-cream/30 px-4 py-2.5 text-[14.5px] placeholder:text-cream/35 focus:border-cream min-h-[48px]"
+                    placeholder="lorem@ipsum.dolor"
+                  />
                 </label>
               </div>
               <label className="block">
-                <span className="text-[12.5px] font-bold uppercase tracking-wider opacity-70">Commission type</span>
-                <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}
-                  className="mt-1 w-full rounded-xl bg-[#FAF6EF]/12 border border-white/25 px-4 py-2.5 text-[#FAF6EF] [&>option]:text-black">
+                <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-cream/60">Type</span>
+                <select
+                  value={form.type}
+                  onChange={(e) => setForm({ ...form, type: e.target.value })}
+                  className="mt-1.5 w-full bg-transparent border border-cream/30 px-4 py-2.5 text-[14.5px] text-cream [&>option]:text-black min-h-[48px]"
+                >
                   {prices.filter((p) => p.enabled).map((p) => (
                     <option key={p.id}>{p.category_name ?? ''} — {p.type} (${p.price})</option>
                   ))}
                 </select>
               </label>
               <label className="block">
-                <span className="text-[12.5px] font-bold uppercase tracking-wider opacity-70">Your idea</span>
-                <textarea required rows={4} value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })}
-                  className="mt-1 w-full rounded-xl bg-[#FAF6EF]/12 border border-white/25 px-4 py-2.5 placeholder:text-white/40"
-                  placeholder="Lorem ipsum dolor sit amet…" />
+                <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-cream/60">Idea</span>
+                <textarea
+                  required
+                  rows={4}
+                  value={form.details}
+                  onChange={(e) => setForm({ ...form, details: e.target.value })}
+                  className="mt-1.5 w-full bg-transparent border border-cream/30 px-4 py-2.5 text-[14.5px] placeholder:text-cream/35 focus:border-cream"
+                  placeholder="Lorem ipsum dolor sit amet…"
+                />
               </label>
-              <button disabled={sending} className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-[#FAF6EF] text-[#40203f] font-bold py-3 hover:-translate-y-0.5 transition-transform min-h-[48px] disabled:opacity-70 disabled:hover:translate-y-0">
-                {sending ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Send className="w-4 h-4" aria-hidden />} {sending ? 'Sending…' : open ? 'Send request ♡' : 'Join the waitlist ♡'}
+              <button
+                disabled={sending}
+                className="w-full inline-flex items-center justify-center gap-2 bg-accent text-cream font-semibold text-[14px] tracking-wide py-3.5 hover:bg-accent-deep transition-colors min-h-[48px] disabled:opacity-70"
+              >
+                {sending ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : null}
+                {sending ? 'Sending…' : open ? 'Send request' : 'Join the waitlist'}
               </button>
               {sendError && (
-                <p className="rounded-xl bg-red-900/40 border border-white/25 px-4 py-2.5 text-[13.5px] font-semibold flex items-center gap-2" role="alert">
+                <p className="border border-accent-soft/40 px-4 py-2.5 text-[13.5px] font-semibold flex items-center gap-2" role="alert">
                   <TriangleAlert className="w-4 h-4 shrink-0" aria-hidden /> {sendError}
                 </p>
               )}
-              <p className="text-[12px] opacity-60 flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" aria-hidden /> Requests land in the studio inbox ♡</p>
+              <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-cream/50">Requests land in the studio inbox</p>
             </form>
           )}
         </div>

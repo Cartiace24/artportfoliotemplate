@@ -1,11 +1,9 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
 import { Hero } from '../components/Hero'
 import { ArtworkViewer, FeaturedGallery } from '../components/Gallery'
 import { CommissionPreview, CommissionProcess } from '../components/Commissions'
 import { AboutPreview, SocialLinks } from '../components/About'
-import { Reveal, SectionHeading } from '../components/Bits'
+import { Eyebrow, Reveal, SectionHead } from '../components/Bits'
 import { ConfigError, EmptyGallery, GallerySkeleton, InlineError } from '../components/States'
 import { PageMeta } from '../lib/meta'
 import { publicArtUrl } from '../lib/supabase'
@@ -33,65 +31,60 @@ export function Home() {
       <Hero settings={settings} heroArt={heroArt} config={config} />
 
       {isMisconfigured && (
-        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 pt-4">
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 pt-6">
           <ConfigError compact />
         </div>
       )}
 
-      {/* Featured + pricing */}
-      <section id="work" aria-label="Featured artwork" className="mx-auto max-w-[1280px] px-4 sm:px-6 pt-6 pb-4 scroll-mt-20">
-        <div className="grid lg:grid-cols-[1fr_360px] gap-8 items-start">
-          <div>
-            <SectionHeading kicker="work" title="Lorem Ipsum" note="lorem ipsum dolor sit amet" />
-            {artLoading || settingsLoading ? (
-              <GallerySkeleton />
-            ) : artError ? (
-              <InlineError message={artError} onRetry={refresh} />
-            ) : artworks.length === 0 ? (
-              <EmptyGallery />
+      {/* 01 — Work */}
+      <section id="work" aria-label="Selected work" className="mx-auto max-w-[1280px] px-4 sm:px-6 pt-14 md:pt-20 scroll-mt-16">
+        <SectionHead index="01" title="Selected Work" note={`${artworks.length} pieces`} />
+        {artLoading || settingsLoading ? (
+          <GallerySkeleton />
+        ) : artError ? (
+          <InlineError message={artError} onRetry={refresh} />
+        ) : artworks.length === 0 ? (
+          <EmptyGallery />
+        ) : (
+          <FeaturedGallery artworks={artworks} onOpen={setViewer} />
+        )}
+      </section>
+
+      {/* 02 — Commissions */}
+      <section aria-label="Commissions" className="mx-auto max-w-[1280px] px-4 sm:px-6 pt-16 md:pt-24">
+        <SectionHead index="02" title="Commissions" note={settings.commission_status === 'open' ? 'Open' : 'Closed'} />
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
+          <Reveal className="lg:col-span-5">
+            {priceLoading ? (
+              <div className="border border-line bg-cream p-6 animate-pulse" aria-hidden>
+                <div className="h-7 w-40 bg-parchment" />
+                <div className="mt-4 h-20 bg-parchment" />
+                <div className="mt-3 h-20 bg-parchment" />
+              </div>
+            ) : priceError ? (
+              <InlineError message={priceError} />
             ) : (
-              <FeaturedGallery artworks={artworks} onOpen={setViewer} />
+              <CommissionPreview settings={settings} categories={categories} prices={prices} />
             )}
-            <Reveal className="mt-6 text-center">
-              <Link to="/commissions" className="inline-flex items-center gap-2 text-[14.5px] font-bold text-[#5b2b4e] underline decoration-wavy underline-offset-4 min-h-[44px]">
-                lorem ipsum dolor? <ArrowRight className="w-4 h-4" aria-hidden />
-              </Link>
+          </Reveal>
+          <div className="lg:col-span-7">
+            <Reveal delay={1}>
+              <Eyebrow className="mb-4">How it works</Eyebrow>
+              <CommissionProcess />
             </Reveal>
-          </div>
-          <div className="lg:sticky lg:top-[84px]">
-            <Reveal>
-              {priceLoading ? (
-                <div className="rounded-2xl bg-[#fffdf7]/80 border border-[#e6dcc8] p-6 animate-pulse" aria-hidden>
-                  <div className="h-7 w-40 rounded bg-[#f3ecdd]" />
-                  <div className="mt-4 h-24 rounded-xl bg-[#faf3e8]" />
-                  <div className="mt-3 h-24 rounded-xl bg-[#faf3e8]" />
-                </div>
-              ) : priceError ? (
-                <InlineError message={priceError} />
-              ) : (
-                <CommissionPreview settings={settings} categories={categories} prices={prices} />
-              )}
-            </Reveal>
-            <p className="mt-3 font-hand text-[19px] text-[#8a6f5c] text-right rotate-1">lorem • ipsum • dolor ♡</p>
           </div>
         </div>
       </section>
 
-      {/* Process */}
-      <section aria-label="Commission process" className="mx-auto max-w-[1280px] px-4 sm:px-6 py-12">
-        <SectionHeading title="Lorem ipsum dolor" note="lorem ipsum" kicker="process" />
-        <CommissionProcess />
-      </section>
-
-      {/* About preview */}
-      <section aria-label="About the artist" className="mx-auto max-w-[1280px] px-4 sm:px-6 py-8">
-        <SectionHeading title="Lorem ipsum" note="lorem ipsum dolor" kicker="about" />
+      {/* 03 — About */}
+      <section aria-label="About the artist" className="mx-auto max-w-[1280px] px-4 sm:px-6 pt-16 md:pt-24">
+        <SectionHead index="03" title="About" note="Profile" />
         <AboutPreview about={about} />
       </section>
 
-      {/* Socials */}
-      <section aria-label="Social links" className="mx-auto max-w-[1280px] px-4 sm:px-6 py-10 text-center">
-        <p className="font-hand text-[22px] text-[#8a6f5c] mb-4 -rotate-1">lorem ipsum! ✿</p>
+      {/* 04 — Elsewhere */}
+      <section aria-label="Elsewhere" className="mx-auto max-w-[1280px] px-4 sm:px-6 pt-16 md:pt-24 pb-4 text-center">
+        <SectionHead index="04" title="Elsewhere" note="Contact" />
         <SocialLinks socials={socials} />
       </section>
 

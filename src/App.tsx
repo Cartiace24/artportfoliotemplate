@@ -28,7 +28,7 @@ function PublicShell({ children }: { children: React.ReactNode }) {
   const { config } = useSiteConfig()
   return (
     <div className="paper-grain min-h-dvh flex flex-col">
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-[#40203f] focus:text-white focus:px-4 focus:py-2 focus:rounded-full">
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-ink focus:text-cream focus:px-4 focus:py-2">
         Skip to content
       </a>
       <Header settings={settings} siteName={config.site_name} />
@@ -41,7 +41,7 @@ function PublicShell({ children }: { children: React.ReactNode }) {
 function StudioLoading() {
   return (
     <main className="min-h-dvh grid place-items-center px-4">
-      <p className="font-hand text-[26px] text-[#8a6f5c] flex items-center gap-3">
+      <p className="font-display italic text-[26px] text-muted flex items-center gap-3">
         <Loader2 className="w-6 h-6 animate-spin" aria-hidden /> opening your studio…
       </p>
     </main>
@@ -60,7 +60,7 @@ export default function App() {
         <Route
           path="/manage/:token"
           element={
-            <div className="paper-grain min-h-dvh bg-[#FAF6EF]">
+            <div className="paper-grain min-h-dvh bg-paper">
               <Suspense fallback={<StudioLoading />}>
                 <Manage />
               </Suspense>
@@ -72,9 +72,9 @@ export default function App() {
           element={
             <PublicShell>
               <main id="main" className="pt-[140px] pb-20 text-center px-4">
-                <p className="font-hand text-[28px] text-[#8a6f5c]">oops, this page wandered off…</p>
-                <h1 className="font-serif-ed text-[52px] text-[#40203f] font-semibold">404 ♡</h1>
-                <a href="/" className="mt-4 inline-block rounded-full bg-[#5b2b4e] text-white px-7 py-3 font-semibold">
+                <p className="font-mono text-[12px] tracking-[0.22em] uppercase text-muted">Nothing here</p>
+                <h1 className="font-display text-[64px] text-ink">404</h1>
+                <a href="/" className="mt-4 inline-block bg-ink text-cream px-7 py-3 text-[14px] font-semibold hover:bg-accent-deep transition-colors min-h-[48px]">
                   Back home →
                 </a>
               </main>

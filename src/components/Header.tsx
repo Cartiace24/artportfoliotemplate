@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
-import { Menu, Sparkles, X } from 'lucide-react'
+import { ArrowUpRight, Menu, X } from 'lucide-react'
 import type { SiteSettings } from '../lib/types'
 
-function statusPill(status: SiteSettings['commission_status']) {
-  return status === 'open' ? 'Commissions Open' : 'Commissions Closed'
-}
+const LINKS = [
+  { to: '/#work', label: 'Work', match: '/' },
+  { to: '/commissions', label: 'Commissions', match: '/commissions' },
+  { to: '/about', label: 'About', match: '/about' },
+] as const
 
 export function Header({ settings, siteName }: { settings: SiteSettings; siteName: string }) {
   const [scrolled, setScrolled] = useState(false)
@@ -15,13 +17,13 @@ export function Header({ settings, siteName }: { settings: SiteSettings; siteNam
   const isOpen = settings.commission_status === 'open'
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
+    const onScroll = () => setScrolled(window.scrollY > 16)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => setOpen(false), [loc.pathname])
+  useEffect(() => setOpen(false), [loc.pathname, loc.hash])
 
   useEffect(() => {
     if (!open) return
@@ -30,102 +32,83 @@ export function Header({ settings, siteName }: { settings: SiteSettings; siteNam
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open ])
+  }, [open])
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
     return () => {
       document.body.style.overflow = ''
     }
-  }, [open ])
-
-  const linkCls = ({ isActive }: { isActive: boolean }) =>
-    `relative px-1 py-1 text-[14.5px] font-medium tracking-wide transition-colors ${
-      isActive ? 'text-[#40203f]' : 'text-[#6d5f6b] hover:text-[#40203f]'
-    }`
+  }, [open])
 
   return (
     <>
       <motion.header
-        initial={{ y: -24, opacity: 0 }}
+        initial={{ y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-[#FAF6EF]/92 backdrop-blur-md shadow-[0_1px_0_#e6dcc8,0_10px_30px_-18px_rgba(64,32,63,0.35)]'
-            : 'bg-transparent'
+          scrolled ? 'bg-paper/95 backdrop-blur-sm border-b border-line' : 'bg-transparent border-b border-transparent'
         }`}
       >
         <div
           className={`mx-auto max-w-[1280px] px-4 sm:px-6 flex items-center justify-between transition-all duration-300 ${
-            scrolled ? 'h-[60px]' : 'h-[76px]'
+            scrolled ? 'h-[58px]' : 'h-[72px]'
           }`}
         >
-          <Link to="/" className="flex items-center gap-2 group" aria-label={`${siteName} home`}>
-            <span className="font-hand text-[30px] leading-none font-bold tracking-tight text-[#40203f] -rotate-2 group-hover:rotate-0 transition-transform">
-              {siteName.toUpperCase()}
-            </span>
-            <svg viewBox="0 0 24 24" className="w-5 h-5 text-[#5b2b4e]" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
-              <path d="M12 21 c-5 -4 -8 -7 -8 -11 a4.5 4.5 0 0 1 8 -3 a4.5 4.5 0 0 1 8 3 c0 4 -3 7 -8 11" />
-              <circle cx="9" cy="10" r="0.9" fill="currentColor" />
-              <circle cx="15" cy="10" r="0.9" fill="currentColor" />
-            </svg>
+          <Link to="/" className="font-display italic text-[24px] leading-none text-ink" aria-label={`${siteName} home`}>
+            {siteName}
           </Link>
 
           <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
-            <NavLink to="/" className={linkCls} end>
-              {({ isActive }) => (
-                <span>
-                  Portfolio
-                  <span className={`block h-[1.5px] bg-[#5b2b4e] transition-all ${isActive ? 'w-full' : 'w-0'}`} />
-                </span>
-              )}
-            </NavLink>
-            <NavLink to="/commissions" className={linkCls}>
-              {({ isActive }) => (
-                <span>
-                  Commissions
-                  <span className={`block h-[1.5px] bg-[#5b2b4e] transition-all ${isActive ? 'w-full' : 'w-0'}`} />
-                </span>
-              )}
-            </NavLink>
-            <NavLink to="/tos" className={linkCls}>
-              {({ isActive }) => (
-                <span>
-                  T.O.S.
-                  <span className={`block h-[1.5px] bg-[#5b2b4e] transition-all ${isActive ? 'w-full' : 'w-0'}`} />
-                </span>
-              )}
-            </NavLink>
-            <NavLink to="/about" className={linkCls}>
-              {({ isActive }) => (
-                <span>
-                  About
-                  <span className={`block h-[1.5px] bg-[#5b2b4e] transition-all ${isActive ? 'w-full' : 'w-0'}`} />
-                </span>
-              )}
-            </NavLink>
+            {LINKS.map((l) =>
+              l.to.startsWith('/#') ? (
+                <a
+                  key={l.to}
+                  href={l.to}
+                  className={`relative text-[14px] font-medium tracking-wide transition-colors pb-0.5 ${
+                    loc.pathname === '/' ? 'text-ink' : 'text-ink-soft hover:text-ink'
+                  } after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:bg-accent after:transition-all ${
+                    loc.pathname === '/' && l.match === '/' ? 'after:w-full' : 'after:w-0 hover:after:w-full'
+                  }`}
+                >
+                  {l.label}
+                </a>
+              ) : (
+                <NavLink
+                  key={l.to}
+                  to={l.to}
+                  className={({ isActive }) =>
+                    `relative text-[14px] font-medium tracking-wide transition-colors pb-0.5 ${
+                      isActive ? 'text-ink' : 'text-ink-soft hover:text-ink'
+                    } after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:bg-accent after:transition-all ${
+                      isActive ? 'after:w-full' : 'after:w-0 hover:after:w-full'
+                    }`
+                  }
+                >
+                  {l.label}
+                </NavLink>
+              )
+            )}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Link
               to="/commissions"
-              className={`hidden sm:inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-semibold text-[#FAF6EF] transition-transform hover:-translate-y-0.5 ${
-                isOpen ? 'bg-[#5b2b4e]' : 'bg-[#6d5f6b]'
-              }`}
+              className="hidden sm:inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.08em] uppercase text-ink hover:text-accent transition-colors min-h-[44px]"
             >
-              <Sparkles className="w-3.5 h-3.5" aria-hidden />
-              {statusPill(settings.commission_status)}
-              <span aria-hidden>✦</span>
+              <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-moss' : 'bg-accent'}`} aria-hidden />
+              {isOpen ? 'Open for work' : 'Books closed'}
+              <ArrowUpRight className="w-3.5 h-3.5" aria-hidden />
             </Link>
             <button
-              className="md:hidden inline-flex items-center justify-center w-11 h-11 rounded-full border border-[#e6dcc8] bg-[#fffdf7]"
+              className="md:hidden inline-flex items-center justify-center w-11 h-11 text-ink"
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-controls="mobile-nav"
               aria-label={open ? 'Close menu' : 'Open menu'}
             >
-              {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
@@ -138,42 +121,50 @@ export function Header({ settings, siteName }: { settings: SiteSettings; siteNam
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 md:hidden"
+            className="fixed inset-0 z-40 md:hidden bg-paper"
           >
-            <div className="absolute inset-0 bg-[#40203f]/30 backdrop-blur-[2px]" onClick={() => setOpen(false)} />
             <motion.nav
               id="mobile-nav"
-              initial={{ y: -16, opacity: 0, scale: 0.98, rotate: -0.5 }}
-              animate={{ y: 0, opacity: 1, scale: 1, rotate: 0 }}
-              exit={{ y: -12, opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute top-[72px] left-4 right-4 rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-6 origin-top"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="h-full flex flex-col justify-center px-8 pt-16"
               aria-label="Mobile"
             >
-              <div className="absolute -top-3 left-10 tape tape-lav" style={{ width: 72 }} aria-hidden />
-              <p className="font-hand text-[22px] text-[#8a6f5c] -rotate-1 mb-3">lorem ipsum? ♡</p>
-              <div className="grid gap-1 text-[18px] font-serif-ed">
+              <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted mb-6">Menu</p>
+              <div className="grid gap-2">
                 {[
-                  ['/', 'Portfolio'],
+                  ['/', 'Work'],
                   ['/commissions', 'Commissions'],
-                  ['/tos', 'T.O.S.'],
                   ['/about', 'About'],
-                ].map(([to, label]) => (
-                  <Link
+                  ['/tos', 'Terms'],
+                ].map(([to, label], i) => (
+                  <motion.div
                     key={to}
-                    to={to}
-                    className={`rounded-xl px-4 py-3 hover:bg-[#f3ecdd] ${loc.pathname === to ? 'bg-[#f3ecdd] text-[#40203f]' : 'text-[#5b2b4e]'}`}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.08 + i * 0.06, duration: 0.35 }}
                   >
-                    <span className="italic">{label}</span>
-                  </Link>
+                    <Link
+                      to={to}
+                      className={`flex items-baseline gap-4 py-3 border-b border-line font-display text-[40px] leading-none ${
+                        loc.pathname === to ? 'text-accent' : 'text-ink'
+                      }`}
+                    >
+                      <span className="font-mono text-[12px] text-muted">0{i + 1}</span>
+                      {label}
+                    </Link>
+                  </motion.div>
                 ))}
               </div>
               <Link
                 to="/commissions"
-                className="mt-4 flex items-center justify-center gap-2 rounded-full bg-[#5b2b4e] text-[#FAF6EF] px-5 py-3.5 font-semibold"
+                className="mt-8 inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.08em] uppercase text-ink"
               >
-                <Sparkles className="w-4 h-4" aria-hidden />
-                {statusPill(settings.commission_status)}
+                <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-moss' : 'bg-accent'}`} aria-hidden />
+                {isOpen ? 'Open for work' : 'Books closed'}
+                <ArrowUpRight className="w-4 h-4" aria-hidden />
               </Link>
             </motion.nav>
           </motion.div>

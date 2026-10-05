@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import type { CommissionCategory, CommissionPrice, SiteSettings } from '../lib/types'
-import { Reveal, Tape } from './Bits'
+import { Eyebrow, Reveal } from './Bits'
 
 export function CommissionPreview({
   settings,
@@ -20,26 +20,34 @@ export function CommissionPreview({
   }))
 
   return (
-    <aside className="relative rounded-2xl bg-[#fffdf7]/80 border border-[#e6dcc8] print-shadow p-6 sm:p-7 overflow-hidden">
-      <Tape className="-top-1 right-8 rotate-[8deg]" />
-      <h3 className="font-serif-ed text-[26px] leading-tight text-[#40203f]">
-        Lorem<br /><span className="italic">dolor sit amet</span> <span aria-hidden className="text-[16px] align-top">✦</span>
-      </h3>
+    <aside className="border border-line bg-cream">
+      <div className="px-6 pt-6 pb-5 border-b border-line">
+        <Eyebrow>Rate card</Eyebrow>
+        <h3 className="font-display text-[30px] leading-none text-ink mt-2">Commissions</h3>
+        <p className="mt-3 inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] uppercase" role="status">
+          <span className={`w-1.5 h-1.5 rounded-full ${open ? 'bg-moss' : 'bg-accent'}`} aria-hidden />
+          <span className={open ? 'text-ink' : 'text-accent-deep'}>{open ? 'Open' : 'Closed'}</span>
+          {open && settings.available_slots != null && (
+            <span className="text-muted normal-case tracking-normal">— {settings.available_slots} slots</span>
+          )}
+        </p>
+      </div>
 
-      <div className="mt-5 space-y-5">
+      <div className="px-6 py-2">
         {byCat.map((cat) => (
           <Reveal key={cat.id}>
-            <div className="rounded-xl bg-[#faf3e8] border border-[#e6dcc8]/70 p-4">
-              <p className="font-serif-ed italic text-[18px] text-[#40203f] mb-3 px-1">{cat.name}</p>
-              <dl className="grid grid-cols-3 gap-2 text-center">
+            <div className="py-5 border-b border-line last:border-0">
+              <p className="font-display italic text-[21px] text-ink">{cat.name}</p>
+              <dl className="mt-3">
                 {cat.items.map((p) => (
-                  <div key={p.id} className="rounded-lg bg-[#fffdf7] border border-[#e6dcc8]/60 py-2.5">
-                    <dt className="text-[12px] text-[#8d857a] font-medium">{p.type}</dt>
-                    <dd className="font-serif-ed text-[20px] text-[#40203f] font-semibold">${p.price}</dd>
+                  <div key={p.id} className="flex items-baseline gap-3 py-1.5">
+                    <dt className="text-[14px] font-medium text-ink shrink-0">{p.type}</dt>
+                    <span className="leader flex-1 h-px" aria-hidden />
+                    <dd className="font-display text-[20px] text-ink shrink-0">${p.price}</dd>
                   </div>
                 ))}
                 {cat.items.length === 0 && (
-                  <p className="col-span-3 text-[13px] text-[#8d857a] py-2">Lorem ipsum dolor ♡</p>
+                  <p className="text-[13px] text-muted py-2">Rates to be announced.</p>
                 )}
               </dl>
             </div>
@@ -47,53 +55,42 @@ export function CommissionPreview({
         ))}
       </div>
 
-      {!open && (
-        <p className="mt-4 rounded-xl bg-[#f2d8d3]/50 border border-[#c98a8a]/30 px-4 py-3 text-[13.5px] text-[#6e2f2f] font-medium" role="status">
-          🔴 Commissions are currently closed — check back soon!
-        </p>
-      )}
-
-      <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }} className="mt-5">
+      <div className="px-6 pb-6">
         <Link
           to="/commissions"
-          className="flex items-center justify-center gap-2 rounded-full bg-[#5b2b4e] text-[#FAF6EF] px-5 py-3.5 text-[15px] font-semibold hover:bg-[#422040] transition-colors"
+          className="flex items-center justify-center gap-2 bg-ink text-cream px-5 py-3.5 text-[14px] font-semibold tracking-wide hover:bg-accent-deep transition-colors min-h-[48px]"
         >
-          View full commission details <ArrowRight className="w-4 h-4" aria-hidden />
+          Full details <ArrowRight className="w-4 h-4" aria-hidden />
         </Link>
-      </motion.div>
-      <span aria-hidden className="absolute bottom-3 left-4 text-[#b9a8d0] text-[20px]">❀</span>
+      </div>
     </aside>
   )
 }
 
 const STEPS = [
-  { n: '01', title: 'Lorem ipsum dolor', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.', doodle: '✎' },
-  { n: '02', title: 'Sit amet consectetur', body: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.', doodle: '♡' },
-  { n: '03', title: 'Adipiscing elit', body: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.', doodle: '✦' },
-  { n: '04', title: 'Sed do eiusmod', body: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.', doodle: '✉' },
+  { n: '01', title: 'Request', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.' },
+  { n: '02', title: 'Discussion', body: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.' },
+  { n: '03', title: 'Sketch', body: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.' },
+  { n: '04', title: 'Final', body: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.' },
 ]
 
 export function CommissionProcess() {
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <ol className="grid sm:grid-cols-2 lg:grid-cols-4 border-t border-l border-line">
       {STEPS.map((s, i) => (
-        <motion.div
+        <motion.li
           key={s.n}
-          initial={{ opacity: 0, y: 26, rotate: 0 }}
-          whileInView={{ opacity: 1, y: 0, rotate: i % 2 === 0 ? -0.8 : 0.8 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-40px' }}
-          transition={{ duration: 0.55, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-          className="relative rounded-2xl bg-[#fffdf7] border border-[#e6dcc8] print-shadow p-5 pt-6"
+          transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+          className="border-b border-r border-line px-6 py-7 bg-cream"
         >
-          <span aria-hidden className="absolute -top-3 left-5 tape tape-lav !w-[64px]" style={{ transform: `rotate(${i % 2 ? 5 : -5}deg)` }} />
-          <p className="font-hand text-[22px] text-[#c98a8a]">{s.n} <span aria-hidden>{s.doodle}</span></p>
-          <h3 className="font-serif-ed italic text-[19px] text-[#40203f] mt-1 leading-snug">{s.title}</h3>
-          <p className="text-[13.8px] leading-relaxed text-[#6d5f6b] mt-2">{s.body}</p>
-          {i < 3 && (
-            <span aria-hidden className="hidden lg:block absolute top-1/2 -right-5 font-hand text-[26px] text-[#8a6f5c] rotate-12">→</span>
-          )}
-        </motion.div>
+          <p className="font-display text-[44px] leading-none text-accent" aria-hidden>{s.n}</p>
+          <h3 className="font-mono text-[12px] tracking-[0.18em] uppercase text-ink mt-4">{s.title}</h3>
+          <p className="text-[14px] leading-relaxed text-ink-soft mt-2">{s.body}</p>
+        </motion.li>
       ))}
-    </div>
+    </ol>
   )
 }
