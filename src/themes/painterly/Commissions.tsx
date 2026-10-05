@@ -97,13 +97,13 @@ export function PCommissionPreview({
 }
 
 const STEPS = [
-  { n: '01', title: 'Send your idea', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.' },
-  { n: '02', title: 'Sketch', body: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.' },
-  { n: '03', title: 'Approval', body: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.' },
-  { n: '04', title: 'Final artwork', body: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.' },
+  { n: '01', title: 'Choose a type', body: 'Pick the format that fits your idea, then share the details and any references.' },
+  { n: '02', title: 'Confirm the quote', body: 'We agree on the scope, price, and timeline before the drawing begins.' },
+  { n: '03', title: 'Review the sketch', body: 'You get a chance to check the direction before the piece is taken to final.' },
+  { n: '04', title: 'Receive your art', body: 'Your finished piece is delivered once the agreed process is complete.' },
 ]
 
-export function PCommissionProcess() {
+export function PCommissionProcess({ onDark = false }: { onDark?: boolean }) {
   return (
     <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-8">
       {STEPS.map((s, i) => (
@@ -116,10 +116,10 @@ export function PCommissionProcess() {
           className={`relative ${i % 2 ? 'lg:mt-8 rotate-[0.6deg]' : '-rotate-[0.6deg]'}`}
         >
           <p className="pt-hand text-[44px] leading-none text-[var(--pt-ochre)]" aria-hidden>{s.n}</p>
-          <h3 className="pt-display text-[22px] text-[var(--pt-ink)] mt-1">{s.title}</h3>
-          <p className="text-[14px] leading-relaxed text-[var(--pt-ink-soft)] mt-1.5">{s.body}</p>
+          <h3 className={`pt-display text-[22px] mt-1 ${onDark ? 'text-[var(--pt-cream)]' : 'text-[var(--pt-ink)]'}`}>{s.title}</h3>
+          <p className={`text-[14px] leading-relaxed mt-1.5 ${onDark ? 'text-[var(--pt-cream)]/85' : 'text-[var(--pt-ink-soft)]'}`}>{s.body}</p>
           {i < 3 && (
-            <SquiggleArrow className="hidden lg:block absolute top-2 -right-7 w-12 h-6 text-[var(--pt-teal)] rotate-12" />
+            <SquiggleArrow className={`hidden lg:block absolute top-2 -right-7 w-12 h-6 rotate-12 ${onDark ? 'text-[var(--pt-sun)]' : 'text-[var(--pt-teal)]'}`} />
           )}
         </motion.li>
       ))}

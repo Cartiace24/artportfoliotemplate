@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useState } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { Loader2 } from 'lucide-react'
@@ -11,7 +11,8 @@ import { Commissions } from './pages/Commissions'
 import { About } from './pages/About'
 import { Terms } from './pages/Terms'
 import { useSiteConfig, useSiteSettings, useSocials } from './hooks/useSiteContent'
-import { resolveTheme } from './lib/theme'
+import { ActiveThemeContext, resolveTheme, type ThemeName } from './lib/theme'
+import { Demo } from './pages/Demo'
 
 // The studio is code-split: public visitors never download the
 // management UI (~40% of the bundle).
@@ -25,24 +26,30 @@ function ScrollTop() {
   return null
 }
 
-function PublicShell({ children }: { children: React.ReactNode }) {
+function PublicShell({ children, themeOverride }: { children: React.ReactNode; themeOverride?: ThemeName }) {
   const { settings } = useSiteSettings()
   const { socials } = useSocials()
   const { config } = useSiteConfig()
   const loc = useLocation()
-  const painterly = resolveTheme(config.theme) === 'painterly'
+  // This is a visitor preview only. The Studio remains the source of truth
+  // for the site's saved theme, so browsing never changes public settings.
+  const [previewTheme, setPreviewTheme] = useState<ThemeName | null>(null)
+  const theme = previewTheme ?? themeOverride ?? resolveTheme(config.theme)
+  const painterly = theme === 'painterly'
+  const toggleTheme = () => setPreviewTheme(painterly ? 'classic' : 'painterly')
   // The painterly home hero is a dark painted band, so the header must
   // start in cream text there; everywhere else it starts in ink.
   const startDark = painterly && loc.pathname === '/'
   return (
+    <ActiveThemeContext.Provider value={theme}>
     <div className={`paper-grain min-h-dvh flex flex-col ${painterly ? 'theme-painterly' : ''}`}>
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-ink focus:text-cream focus:px-4 focus:py-2">
         Skip to content
       </a>
       {painterly ? (
-        <PHeader settings={settings} siteName={config.site_name} startDark={startDark} />
+        <PHeader settings={settings} siteName={config.site_name} startDark={startDark} theme={theme} onToggleTheme={toggleTheme} />
       ) : (
-        <ClassicHeader settings={settings} siteName={config.site_name} />
+        <ClassicHeader settings={settings} siteName={config.site_name} theme={theme} onToggleTheme={toggleTheme} />
       )}
       <div className="flex-1">{children}</div>
       {painterly ? (
@@ -51,6 +58,7 @@ function PublicShell({ children }: { children: React.ReactNode }) {
         <ClassicFooter socials={socials} siteName={config.site_name} tagline={config.tagline} />
       )}
     </div>
+    </ActiveThemeContext.Provider>
   )
 }
 
@@ -73,6 +81,9 @@ export default function App() {
         <Route path="/commissions" element={<PublicShell><Commissions /></PublicShell>} />
         <Route path="/about" element={<PublicShell><About /></PublicShell>} />
         <Route path="/tos" element={<PublicShell><Terms /></PublicShell>} />
+        <Route path="/demo" element={<Demo />} />
+        <Route path="/demo/classic" element={<PublicShell themeOverride="classic"><Home /></PublicShell>} />
+        <Route path="/demo/painterly" element={<PublicShell themeOverride="painterly"><Home /></PublicShell>} />
         <Route
           path="/manage/:token"
           element={

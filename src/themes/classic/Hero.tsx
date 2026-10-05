@@ -94,10 +94,10 @@ export function Hero({ settings, heroArt, config }: { settings: SiteSettings; he
                 View the wall
               </a>
               <a
-                href="/commissions"
+                href="/commissions#request"
                 className="link-wavy inline-flex items-center gap-1.5 text-[15px] font-semibold text-ink hover:text-accent-deep transition-colors min-h-[48px] decoration-accent"
               >
-                Commission sheet →
+                Request a commission →
               </a>
             </motion.div>
 

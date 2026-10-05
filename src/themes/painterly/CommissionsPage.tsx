@@ -18,6 +18,8 @@ export function PainterlyCommissions() {
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
   const open = settings.commission_status === 'open'
+  const startingPrice = prices.filter((p) => p.enabled).reduce<number | null>((lowest, p) =>
+    lowest === null || p.price < lowest ? p.price : lowest, null)
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -56,6 +58,20 @@ export function PainterlyCommissions() {
               <PNote className="text-[22px]">— {settings.available_slots} slots left!</PNote>
             )}
           </div>
+          <dl className="mt-6 grid grid-cols-3 max-w-[620px] mx-auto border-y-2 border-[var(--pt-ink)]/25 text-left">
+            <div className="py-3 pr-3 border-r-2 border-[var(--pt-ink)]/20">
+              <dt className="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--pt-brown)]">Starting at</dt>
+              <dd className="mt-1 pt-display text-[24px] text-[var(--pt-ink)]">{startingPrice != null ? `$${startingPrice}` : 'Ask'}</dd>
+            </div>
+            <div className="py-3 px-3 border-r-2 border-[var(--pt-ink)]/20">
+              <dt className="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--pt-brown)]">Availability</dt>
+              <dd className="mt-1 text-[14px] font-bold text-[var(--pt-ink)]">{open ? 'Taking requests' : 'Waitlist open'}</dd>
+            </div>
+            <div className="py-3 pl-3">
+              <dt className="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--pt-brown)]">Timeline</dt>
+              <dd className="mt-1 text-[14px] font-bold text-[var(--pt-ink)]">Set with quote</dd>
+            </div>
+          </dl>
           {settings.commission_message && (
             <p className="mt-4 text-[15.5px] leading-relaxed text-[var(--pt-ink-soft)] max-w-[60ch] mx-auto">{settings.commission_message}</p>
           )}
@@ -66,12 +82,16 @@ export function PainterlyCommissions() {
 
       {artworks.length > 0 && (
         <div className="mt-10">
-          <PNote className="text-[24px] -rotate-1 mb-4 text-center">a few finished ones, for reference ↓</PNote>
+          <PNote className="text-[24px] -rotate-1 mb-4 text-center">commission references — a feel for my hand ↓</PNote>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {artworks.slice(0, 4).map((a, i) => (
               <figure key={a.id} className={`relative bg-[var(--pt-cream)] border-2 border-[var(--pt-ink)] p-1.5 ${i % 2 ? 'rotate-2' : '-rotate-2'}`}>
                 <PTape className="-top-3 left-1/2 -translate-x-1/2 !w-[70px] !h-[22px]" />
                 <SmartImage path={a.image_path} alt={a.title} width={500} sizes="(max-width: 640px) 50vw, 25vw" className="w-full aspect-square object-cover" />
+                <figcaption className="pt-2 flex items-baseline justify-between gap-2">
+                  <span className="pt-hand text-[18px] text-[var(--pt-ink)] truncate">{a.title}</span>
+                  <span className="font-mono text-[9px] tracking-[0.1em] uppercase text-[var(--pt-brown)] shrink-0">{a.category}</span>
+                </figcaption>
               </figure>
             ))}
           </div>
@@ -147,14 +167,14 @@ export function PainterlyCommissions() {
       <section className="mt-16 grid lg:grid-cols-2 gap-8">
         <div className="relative pt-canvas border-2 border-[var(--pt-ink)] p-6 sm:p-8 -rotate-[0.4deg]">
           <PTape className="-top-4 left-10 -rotate-3" />
-          <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-[var(--pt-brown)]">Worth knowing</p>
+          <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-[var(--pt-brown)]">Before you request</p>
           <ul className="mt-4 space-y-3 text-[14.5px] leading-relaxed text-[var(--pt-ink)]">
             {[
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-              'Sed do eiusmod tempor incididunt ut labore et dolore.',
-              'Ut enim ad minim veniam, quis nostrud exercitation.',
-              'Duis aute irure dolor in reprehenderit in voluptate.',
-              'Excepteur sint occaecat cupidatat non proident.',
+              'A clear idea, visual references, and a note on mood or pose make for the best start.',
+              'The final quote and timeline are confirmed before work begins.',
+              'Please mention deadlines, extra characters, or complex backgrounds up front.',
+              'Ask before requesting commercial use or a rush delivery.',
+              'The sketch-review step keeps the direction clear before final rendering.',
             ].map((t) => (
               <li key={t} className="flex gap-3">
                 <Check className="w-4 h-4 mt-1 text-[var(--pt-olive)] shrink-0" aria-hidden />
@@ -223,6 +243,7 @@ export function PainterlyCommissions() {
               </label>
               <label className="block">
                 <span className="font-mono text-[11px] tracking-[0.14em] uppercase opacity-70">Idea</span>
+                <span className="mt-1 block text-[12px] leading-relaxed opacity-65">Include references, character details, mood, pose, and any deadline.</span>
                 <textarea
                   required
                   rows={4}

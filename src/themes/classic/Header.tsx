@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
-import { ArrowUpRight, Menu, X } from 'lucide-react'
+import { ArrowUpRight, Menu, Palette, X } from 'lucide-react'
 import type { SiteSettings } from '../../lib/types'
+import type { ThemeName } from '../../lib/theme'
 
 const LINKS = [
   { to: '/#work', label: 'Work', match: '/' },
@@ -10,7 +11,17 @@ const LINKS = [
   { to: '/about', label: 'About', match: '/about' },
 ] as const
 
-export function Header({ settings, siteName }: { settings: SiteSettings; siteName: string }) {
+export function Header({
+  settings,
+  siteName,
+  theme,
+  onToggleTheme,
+}: {
+  settings: SiteSettings
+  siteName: string
+  theme: ThemeName
+  onToggleTheme: () => void
+}) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const loc = useLocation()
@@ -93,12 +104,23 @@ export function Header({ settings, siteName }: { settings: SiteSettings; siteNam
           </nav>
 
           <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              aria-pressed={theme === 'painterly'}
+              aria-label="Switch to Painterly theme"
+              title="Switch to Painterly theme"
+              className="inline-flex items-center justify-center gap-2 min-h-[44px] px-2 sm:px-3 border border-line text-ink hover:border-accent hover:text-accent transition-colors"
+            >
+              <Palette className="w-4 h-4" aria-hidden />
+              <span className="hidden lg:inline font-mono text-[11px] tracking-[0.08em] uppercase">Painterly</span>
+            </button>
             <Link
-              to="/commissions"
-              className="hidden sm:inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.08em] uppercase text-ink hover:text-accent transition-colors min-h-[44px]"
+              to="/commissions#request"
+              className="hidden md:inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.08em] uppercase text-ink hover:text-accent transition-colors min-h-[44px]"
             >
               <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-moss' : 'bg-accent'}`} aria-hidden />
-              {isOpen ? 'Open for work' : 'Books closed'}
+              {isOpen ? 'Request a commission' : 'Join the waitlist'}
               <ArrowUpRight className="w-3.5 h-3.5" aria-hidden />
             </Link>
             <button
@@ -159,13 +181,22 @@ export function Header({ settings, siteName }: { settings: SiteSettings; siteNam
                 ))}
               </div>
               <Link
-                to="/commissions"
+                to="/commissions#request"
                 className="mt-8 inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.08em] uppercase text-ink"
               >
                 <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-moss' : 'bg-accent'}`} aria-hidden />
-                {isOpen ? 'Open for work' : 'Books closed'}
+                {isOpen ? 'Request a commission' : 'Join the waitlist'}
                 <ArrowUpRight className="w-4 h-4" aria-hidden />
               </Link>
+              <button
+                type="button"
+                onClick={onToggleTheme}
+                aria-pressed={theme === 'painterly'}
+                className="mt-5 inline-flex items-center gap-2 min-h-[44px] w-fit font-mono text-[12px] tracking-[0.08em] uppercase text-ink hover:text-accent transition-colors"
+              >
+                <Palette className="w-4 h-4" aria-hidden />
+                Switch to Painterly theme
+              </button>
             </motion.nav>
           </motion.div>
         )}

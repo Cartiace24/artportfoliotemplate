@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
-import { Menu, X } from 'lucide-react'
+import { Menu, Palette, X } from 'lucide-react'
 import type { SiteSettings } from '../../lib/types'
+import type { ThemeName } from '../../lib/theme'
 
 const LINKS = [
   { to: '/', label: 'Home', end: true },
@@ -16,10 +17,14 @@ export function PHeader({
   settings,
   siteName,
   startDark = false,
+  theme,
+  onToggleTheme,
 }: {
   settings: SiteSettings
   siteName: string
   startDark?: boolean
+  theme: ThemeName
+  onToggleTheme: () => void
 }) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -102,12 +107,23 @@ export function PHeader({
           </nav>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              aria-pressed={theme === 'painterly'}
+              aria-label="Switch to Classic theme"
+              title="Switch to Classic theme"
+              className={`inline-flex items-center justify-center gap-2 min-h-[44px] px-2 sm:px-3 border-2 transition-colors hover:border-[var(--pt-ochre)] hover:text-[var(--pt-ochre)] ${overDark ? 'border-[var(--pt-cream)]/70' : 'border-[var(--pt-ink)]/50'} ${fg}`}
+            >
+              <Palette className="w-4 h-4" aria-hidden />
+              <span className="hidden lg:inline font-mono text-[11px] tracking-[0.08em] uppercase">Classic</span>
+            </button>
             <Link
-              to="/commissions"
-              className="hidden sm:inline-flex items-center gap-2 border-2 border-[var(--pt-ink)] bg-[var(--pt-sun)] text-[var(--pt-ink)] px-4 py-2 font-mono text-[11px] tracking-[0.12em] uppercase font-medium hover:bg-[var(--pt-ochre)] hover:text-white transition-colors min-h-[44px]"
+              to="/commissions#request"
+              className="hidden md:inline-flex items-center gap-2 border-2 border-[var(--pt-ink)] bg-[var(--pt-sun)] text-[var(--pt-ink)] px-4 py-2 font-mono text-[11px] tracking-[0.12em] uppercase font-medium hover:bg-[var(--pt-ochre)] hover:text-white transition-colors min-h-[44px]"
             >
               <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-[var(--pt-olive)]' : 'bg-[var(--pt-ink)]'}`} aria-hidden />
-              {isOpen ? 'Open' : 'Closed'}
+              {isOpen ? 'Request a commission' : 'Join waitlist'}
             </Link>
             <button
               className={`md:hidden inline-flex items-center justify-center w-11 h-11 transition-colors ${fg}`}
@@ -167,12 +183,21 @@ export function PHeader({
                 ))}
               </div>
               <Link
-                to="/commissions"
+                to="/commissions#request"
                 className="mt-8 inline-flex items-center gap-2 border-2 border-[var(--pt-cream)]/60 text-[var(--pt-cream)] px-5 py-3 font-mono text-[12px] tracking-[0.12em] uppercase w-fit"
               >
                 <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-[var(--pt-sun)]' : 'bg-[var(--pt-ochre)]'}`} aria-hidden />
-                {isOpen ? 'Commissions open' : 'Commissions closed'}
+                {isOpen ? 'Request a commission' : 'Join waitlist'}
               </Link>
+              <button
+                type="button"
+                onClick={onToggleTheme}
+                aria-pressed={theme === 'painterly'}
+                className="mt-5 inline-flex items-center gap-2 min-h-[44px] w-fit font-mono text-[12px] tracking-[0.08em] uppercase text-[var(--pt-cream)] hover:text-[var(--pt-sun)] transition-colors"
+              >
+                <Palette className="w-4 h-4" aria-hidden />
+                Switch to Classic theme
+              </button>
             </motion.nav>
           </motion.div>
         )}

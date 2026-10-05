@@ -1,10 +1,10 @@
 import { useSiteConfig } from '../hooks/useSiteContent'
-import { resolveTheme } from '../lib/theme'
+import { useActiveTheme } from '../lib/theme'
 import { Home as ClassicHome } from '../themes/classic/Home'
 import { PainterlyHome } from '../themes/painterly/Home'
 
 /** Route stays stable — the theme decides which design renders. */
 export function Home() {
   const { config } = useSiteConfig()
-  return resolveTheme(config.theme) === 'painterly' ? <PainterlyHome /> : <ClassicHome />
+  return useActiveTheme(config.theme) === 'painterly' ? <PainterlyHome /> : <ClassicHome />
 }

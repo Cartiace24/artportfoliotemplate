@@ -109,7 +109,7 @@ export function PainterlyHome() {
           <div className="mt-16">
             <PReveal>
               <p className="pt-hand text-[28px] text-[var(--pt-sun)] mb-5 -rotate-1">how it goes ↓</p>
-              <PCommissionProcess />
+              <PCommissionProcess onDark />
             </PReveal>
           </div>
 

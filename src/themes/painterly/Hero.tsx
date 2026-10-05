@@ -51,13 +51,19 @@ export function PHero({ settings, heroArt, config }: { settings: SiteSettings; h
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.46, ease: EASE }}
-              className="mt-4"
+              className="mt-4 flex flex-wrap items-center gap-4"
             >
               <a
                 href="#work"
                 className="pt-brushbtn inline-flex items-center justify-center px-8 py-3.5 pt-hand font-bold text-[24px] min-h-[48px] -rotate-1 hover:rotate-0"
               >
                 View My Work
+              </a>
+              <a
+                href="/commissions#request"
+                className="inline-flex items-center min-h-[48px] pt-hand text-[23px] text-[var(--pt-cream)] underline decoration-[var(--pt-sun)] decoration-2 underline-offset-8 hover:text-[var(--pt-sun)] transition-colors"
+              >
+                Request a piece →
               </a>
             </motion.div>
           </div>

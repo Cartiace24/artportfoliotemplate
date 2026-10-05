@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion } from 'motion/react'
 import type { Artwork } from '../../lib/types'
 import { SmartImage } from '../../components/SmartImage'
@@ -87,12 +88,38 @@ export function ArtworkCard({
 }
 
 export function FeaturedGallery({ artworks, onOpen }: { artworks: Artwork[]; onOpen: (a: Artwork) => void }) {
+  const categories = [...new Set(artworks.map((art) => art.category))]
+  const [activeCategory, setActiveCategory] = useState('All')
+  const visibleArtworks = activeCategory === 'All' ? artworks : artworks.filter((art) => art.category === activeCategory)
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-12 md:gap-y-8">
-      {artworks.slice(0, 12).map((a, i) => (
-        <ArtworkCard key={a.id} art={a} onOpen={onOpen} index={i} slot={slotFor(i)} />
-      ))}
-    </div>
+    <>
+      {categories.length > 1 && (
+        <div className="mb-8 flex flex-wrap gap-2" aria-label="Filter artwork by category">
+          {['All', ...categories].map((category) => {
+            const selected = activeCategory === category
+            return (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setActiveCategory(category)}
+                aria-pressed={selected}
+                className={`min-h-[44px] border px-3.5 py-2 font-mono text-[11px] tracking-[0.1em] uppercase transition-colors ${
+                  selected ? 'border-ink bg-ink text-cream' : 'border-line text-ink hover:border-ink'
+                }`}
+              >
+                {category}
+              </button>
+            )
+          })}
+        </div>
+      )}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-12 md:gap-y-8">
+        {visibleArtworks.slice(0, 12).map((a, i) => (
+          <ArtworkCard key={a.id} art={a} onOpen={onOpen} index={i} slot={slotFor(i)} />
+        ))}
+      </div>
+    </>
   )
 }
 

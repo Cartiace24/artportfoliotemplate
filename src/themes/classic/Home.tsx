@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Hero } from './Hero'
 import { ArtworkViewer, FeaturedGallery } from './Gallery'
 import { CommissionPreview, CommissionProcess } from './Commissions'
@@ -53,8 +54,10 @@ export function Home() {
       {/* 02 — Commissions */}
       <section aria-label="Commissions" className="mx-auto max-w-[1280px] px-4 sm:px-6 pt-16 md:pt-24">
         <SectionHead index="02" title="Commissions" note={settings.commission_status === 'open' ? 'Open' : 'Closed'} />
-        <div className="grid lg:grid-cols-12 gap-8 items-start">
-          <Reveal className="lg:col-span-5">
+        <div className="relative border border-line bg-parchment/45 p-4 sm:p-6 lg:p-8">
+          <div aria-hidden className="absolute -top-3 right-8 hidden lg:block w-24 h-6 rotate-[3deg] tape-paper" />
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-start">
+          <Reveal>
             {priceLoading ? (
               <div className="border border-line bg-cream p-6 animate-pulse" aria-hidden>
                 <div className="h-7 w-40 bg-parchment" />
@@ -67,12 +70,40 @@ export function Home() {
               <CommissionPreview settings={settings} categories={categories} prices={prices} examples={artworks} />
             )}
           </Reveal>
-          <p className="mt-3 font-note text-[20px] text-muted text-right -rotate-1">picked fresh from the wall ↓</p>
-          <div className="lg:col-span-7">
+          <div className="lg:pt-3">
             <Reveal delay={1}>
-              <Eyebrow className="mb-4">How it works</Eyebrow>
-              <CommissionProcess />
+              <p className="font-note text-[22px] text-muted -rotate-1 mb-2">a little guide before we begin</p>
+              <h3 className="font-display text-[clamp(2.25rem,4vw,3.5rem)] leading-[0.96] text-ink">Let&rsquo;s make<br />something good.</h3>
+              <p className="mt-4 max-w-[42ch] text-[16px] leading-relaxed text-ink-soft">
+                Choose a commission type, tell me about your idea, and we&rsquo;ll settle the details together before any drawing begins.
+              </p>
+              <dl className="mt-6 grid sm:grid-cols-3 border-y border-line">
+                <div className="py-3 sm:pr-3 border-b sm:border-b-0 sm:border-r border-line">
+                  <dt className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted">Availability</dt>
+                  <dd className="mt-1 text-[14px] font-semibold text-ink">{settings.commission_status === 'open' ? 'Taking requests' : 'Waitlist open'}</dd>
+                </div>
+                <div className="py-3 sm:px-3 border-b sm:border-b-0 sm:border-r border-line">
+                  <dt className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted">Quote</dt>
+                  <dd className="mt-1 text-[14px] font-semibold text-ink">Confirmed first</dd>
+                </div>
+                <div className="py-3 sm:pl-3">
+                  <dt className="font-mono text-[10px] tracking-[0.15em] uppercase text-muted">Timeline</dt>
+                  <dd className="mt-1 text-[14px] font-semibold text-ink">Set together</dd>
+                </div>
+              </dl>
+              <Link
+                to="/commissions#request"
+                className="mt-7 inline-flex min-h-[48px] items-center justify-center bg-ink px-6 py-3 text-[14px] font-semibold tracking-wide text-cream transition-colors hover:bg-accent-deep"
+              >
+                Request a commission →
+              </Link>
+              <p className="mt-3 font-note text-[18px] text-muted">references + a clear idea are always welcome</p>
+              <div className="mt-8 border-t border-line pt-7">
+                <Eyebrow className="mb-5">How it works</Eyebrow>
+                <CommissionProcess />
+              </div>
             </Reveal>
+          </div>
           </div>
         </div>
       </section>

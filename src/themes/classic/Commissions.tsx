@@ -87,15 +87,15 @@ export function CommissionPreview({
 }
 
 const STEPS = [
-  { n: '1', title: 'Request', body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.' },
-  { n: '2', title: 'Discussion', body: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.' },
-  { n: '3', title: 'Sketch', body: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.' },
-  { n: '4', title: 'Final', body: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.' },
+  { n: '1', title: 'Choose a type', body: 'Pick the format that fits your idea, then share the details and any references.' },
+  { n: '2', title: 'Confirm the quote', body: 'We agree on the scope, price, and timeline before the drawing begins.' },
+  { n: '3', title: 'Review the sketch', body: 'You get a chance to check the direction before the piece is taken to final.' },
+  { n: '4', title: 'Receive your art', body: 'Your finished piece is delivered once the agreed process is complete.' },
 ]
 
 export function CommissionProcess() {
   return (
-    <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8">
+    <ol className="grid sm:grid-cols-2 gap-x-8 gap-y-7">
       {STEPS.map((s, i) => (
         <motion.li
           key={s.n}
@@ -110,9 +110,6 @@ export function CommissionProcess() {
             <h3 className="font-mono text-[12px] tracking-[0.18em] uppercase text-ink">{s.title}</h3>
           </div>
           <p className="text-[14px] leading-relaxed text-ink-soft mt-2">{s.body}</p>
-          {i < 3 && (
-            <span aria-hidden className="hidden lg:block absolute top-5 -right-5 font-note text-[26px] text-muted rotate-12">→</span>
-          )}
         </motion.li>
       ))}
     </ol>

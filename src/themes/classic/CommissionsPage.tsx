@@ -19,6 +19,8 @@ export function Commissions() {
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState<string | null>(null)
   const open = settings.commission_status === 'open'
+  const startingPrice = prices.filter((p) => p.enabled).reduce<number | null>((lowest, p) =>
+    lowest === null || p.price < lowest ? p.price : lowest, null)
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,6 +52,20 @@ export function Commissions() {
               <span className="font-note text-[20px] text-muted">— {settings.available_slots} slots left!</span>
             )}
           </div>
+          <dl className="mt-6 grid grid-cols-3 max-w-[620px] border-y border-line text-left">
+            <div className="py-3 pr-3 border-r border-line">
+              <dt className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted">Starting at</dt>
+              <dd className="mt-1 font-display text-[23px] text-ink">{startingPrice != null ? `$${startingPrice}` : 'Ask'}</dd>
+            </div>
+            <div className="py-3 px-3 border-r border-line">
+              <dt className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted">Availability</dt>
+              <dd className="mt-1 text-[14px] font-semibold text-ink">{open ? 'Taking requests' : 'Waitlist open'}</dd>
+            </div>
+            <div className="py-3 pl-3">
+              <dt className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted">Timeline</dt>
+              <dd className="mt-1 text-[14px] font-semibold text-ink">Set with quote</dd>
+            </div>
+          </dl>
           {settings.commission_message && (
             <p className="mt-3 text-[15.5px] leading-relaxed text-ink-soft max-w-[60ch]">{settings.commission_message}</p>
           )}
@@ -69,11 +85,15 @@ export function Commissions() {
 
       {artworks.length > 0 && (
         <div className="mt-10">
-          <Note className="text-[20px] -rotate-1 mb-3">recent stuff, so you know my hand ↓</Note>
+          <Note className="text-[20px] -rotate-1 mb-3">commission references — a feel for my hand ↓</Note>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {artworks.slice(0, 4).map((a, i) => (
               <figure key={a.id} className={`relative bg-cream border border-line p-1.5 hard-shadow ${i % 2 ? 'rotate-1' : '-rotate-1'}`}>
                 <SmartImage path={a.image_path} alt={a.title} width={500} sizes="(max-width: 640px) 50vw, 25vw" className="w-full aspect-square object-cover" />
+                <figcaption className="pt-2 flex items-baseline justify-between gap-2">
+                  <span className="font-note text-[17px] text-ink truncate">{a.title}</span>
+                  <span className="font-mono text-[9px] tracking-[0.1em] uppercase text-muted shrink-0">{a.category}</span>
+                </figcaption>
               </figure>
             ))}
           </div>
@@ -148,14 +168,14 @@ export function Commissions() {
       <section className="mt-16 grid lg:grid-cols-2 gap-8">
         <div className="relative border border-line bg-cream p-6 sm:p-8 -rotate-[0.4deg]">
           <Tape tone="accent" className="-top-3 left-10 -rotate-3" />
-          <Eyebrow>Good to know</Eyebrow>
+          <Eyebrow>Before you request</Eyebrow>
           <ul className="mt-4 space-y-3 text-[14.5px] leading-relaxed text-ink-soft">
             {[
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-              'Sed do eiusmod tempor incididunt ut labore et dolore.',
-              'Ut enim ad minim veniam, quis nostrud exercitation.',
-              'Duis aute irure dolor in reprehenderit in voluptate.',
-              'Excepteur sint occaecat cupidatat non proident.',
+              'A clear idea, visual references, and a note on mood or pose make for the best start.',
+              'The final quote and timeline are confirmed before work begins.',
+              'Please mention deadlines, extra characters, or complex backgrounds up front.',
+              'Ask before requesting commercial use or a rush delivery.',
+              'The sketch-review step keeps the direction clear before final rendering.',
             ].map((t) => (
               <li key={t} className="flex gap-3">
                 <Check className="w-4 h-4 mt-1 text-moss shrink-0" aria-hidden />
@@ -168,7 +188,7 @@ export function Commissions() {
           </p>
         </div>
 
-        <div className="relative bg-ink text-cream p-6 sm:p-8 rotate-[0.4deg]">
+        <div id="request" className="relative bg-ink text-cream p-6 sm:p-8 rotate-[0.4deg] scroll-mt-24">
           <Note className="text-[19px] text-cream/60 rotate-1 mb-1">i reply within a few days!</Note>
           <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-cream/60">Request a slot</p>
           <h2 className="font-display italic text-[30px] mt-2">Start a piece</h2>
@@ -225,6 +245,7 @@ export function Commissions() {
               </label>
               <label className="block">
                 <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-cream/60">Idea</span>
+                <span className="mt-1 block text-[12px] leading-relaxed text-cream/60">Include references, character details, mood, pose, and any deadline.</span>
                 <textarea
                   required
                   rows={4}
